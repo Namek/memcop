@@ -9,6 +9,10 @@ import net.namekdev.memcop.domain.Assembly.OpArgType;
 import net.namekdev.memcop.domain.Assembly.OpDefinition;
 
 public class Transputer {
+    public static final int EQUAL = 0;
+    public static final int LESSER_THAN = -1;
+    public static final int GREATER_THAN = 1;
+
     private class RegisterState {
         public Assembly.Register info;
         public int value;
@@ -30,11 +34,11 @@ public class Transputer {
     public int instrCursor = 0;
     public List<Instruction> instructions;
     public Stack<Integer> stack = new Stack<Integer>();
-
     public final int stackMaxSize;
     public final RegisterState[] registerStates;
-    public final InstrExecutor[] instructionExecutors;
+    public int lastComparison = 0;
 
+    public final InstrExecutor[] instructionExecutors;
     public final TreeMap<String, InstrExecutor> instructionExecutorByName = new TreeMap<String, InstrExecutor>() {{
         put("add", new InstrExecutor() {
             @Override
@@ -151,10 +155,9 @@ public class Transputer {
             public int execute(Instruction instr) {
                 int value1 = getValue(instr.args[0]);
                 int value2 = getValue(instr.args[1]);
-                RegisterState reg = getReg(instr.args[2]);
 
                 int cmp = value2 - value1;
-                reg.value = cmp > 0 ? 1 : cmp < 0 ? -1 : 0;
+                lastComparison = cmp > 0 ? 1 : cmp < 0 ? -1 : 0;
 
                 return -1;
             }
@@ -198,9 +201,43 @@ public class Transputer {
         put("je", new InstrExecutor() {
             @Override
             public int execute(Instruction instr) {
-                // TODO this needs a proper definition. What are we equaling this to?
-                int relativeOffset = getValue(instr.args[1]);
-                return instrCursor + relativeOffset;
+                int relativeOffset = getValue(instr.args[0]);
+                return lastComparison == EQUAL ? instrCursor + relativeOffset : -1;
+            }
+        });
+        put("jne", new InstrExecutor() {
+            @Override
+            public int execute(Instruction instr) {
+                int relativeOffset = getValue(instr.args[0]);
+                return lastComparison != EQUAL ? instrCursor + relativeOffset : -1;
+            }
+        });
+        put("jg", new InstrExecutor() {
+            @Override
+            public int execute(Instruction instr) {
+                int relativeOffset = getValue(instr.args[0]);
+                return lastComparison == GREATER_THAN ? instrCursor + relativeOffset : -1;
+            }
+        });
+        put("jl", new InstrExecutor() {
+            @Override
+            public int execute(Instruction instr) {
+                int relativeOffset = getValue(instr.args[0]);
+                return lastComparison == LESSER_THAN ? instrCursor + relativeOffset : -1;
+            }
+        });
+        put("jge", new InstrExecutor() {
+            @Override
+            public int execute(Instruction instr) {
+                int relativeOffset = getValue(instr.args[0]);
+                return lastComparison != LESSER_THAN ? instrCursor + relativeOffset : -1;
+            }
+        });
+        put("jle", new InstrExecutor() {
+            @Override
+            public int execute(Instruction instr) {
+                int relativeOffset = getValue(instr.args[0]);
+                return lastComparison != GREATER_THAN ? instrCursor + relativeOffset : -1;
             }
         });
     }};
@@ -258,6 +295,8 @@ public class Transputer {
         for (RegisterState reg : registerStates) {
             reg.value = 0;
         }
+        lastComparison = 0;
+        stack.clear();
     }
 
     private int getValue(InstrArg instrArg) {
