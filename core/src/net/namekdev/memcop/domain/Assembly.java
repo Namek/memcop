@@ -25,6 +25,7 @@ public abstract class Assembly {
     public static final OpArg $Register = new OpArg(new OpArgType[] {Register}, false);
 
     public static final OpDefinition[] opdefs = new OpDefinition[] {
+        op("mov", $Value, $OutRegister).describe("copy value: a -> b"),
         op("add", $Value, $Value, $OutRegister).describe("a + b -> c"),
         op("sub", $Value, $Value, $OutRegister).describe("a - b -> c"),
         op("mul", $Value, $Value, $OutRegister).describe("a * b -> c"),
@@ -115,6 +116,18 @@ public abstract class Assembly {
     public static class Instruction {
         public OpDefinition opdef;
         public InstrArg[] args;
+
+        @Override
+        public String toString() {
+            StringBuilder sb = new StringBuilder(opdef.instructionName);
+
+            for (InstrArg arg : args) {
+                sb.append(" ");
+                sb.append(arg.token);
+            }
+
+            return sb.toString();
+        }
     }
 
     public static class InstrArg {
@@ -262,9 +275,9 @@ public abstract class Assembly {
                     String msg = "instruction " + opdef.instructionName + ": argument of type " + instrArgType + " is not allowed for " + nth + " argument";
                     throw new AssemblyCompilationError(msg, line);
                 }
-
-                line += 1;
             }
+
+            instructions.add(instr);
         }
 
         // 3. replace labels with constants: calculate relative offsets

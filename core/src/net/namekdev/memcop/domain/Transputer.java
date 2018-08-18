@@ -13,9 +13,14 @@ public class Transputer {
     public static final int LESSER_THAN = -1;
     public static final int GREATER_THAN = 1;
 
-    private class RegisterState {
+    public class RegisterState {
         public Assembly.Register info;
         public int value;
+
+        @Override
+        public String toString() {
+            return info.name + " = " + value;
+        }
     }
 
     private interface InstrExecutor {
@@ -27,21 +32,31 @@ public class Transputer {
         int execute(Instruction instr);
     }
 
-    IInputMemory sourceMemory;
-    IOutputMemory destMemory;
+    public IInputMemory sourceMemory;
+    public IOutputMemory destMemory;
 
     /**
      * Defines a position before given instruction is executed.
      */
     public int instrCursor = 0;
     public List<Instruction> instructions;
+    public Instruction lastInstruction = null;
     public Stack<Integer> stack = new Stack<Integer>();
-    public final int stackMaxSize;
+    public int stackMaxSize = 4;
     public final RegisterState[] registerStates;
     public int lastComparison = 0;
 
     public final InstrExecutor[] instructionExecutors;
     public final TreeMap<String, InstrExecutor> instructionExecutorByName = new TreeMap<String, InstrExecutor>() {{
+        put("mov", new InstrExecutor() {
+            @Override
+            public int execute(Instruction instr) {
+                int src = getValue(instr.args[0]);
+                getReg(instr.args[1]).value = src;
+
+                return -1;
+            }
+        });
         put("add", new InstrExecutor() {
             @Override
             public int execute(Instruction instr) {
@@ -159,7 +174,7 @@ public class Transputer {
                 int value2 = getValue(instr.args[1]);
 
                 int cmp = value2 - value1;
-                lastComparison = cmp > 0 ? 1 : cmp < 0 ? -1 : 0;
+                lastComparison = cmp > 0 ? 1 : (cmp < 0 ? -1 : 0);
 
                 return -1;
             }
@@ -245,9 +260,7 @@ public class Transputer {
     }};
 
 
-    public Transputer(int stackMaxSize) {
-        this.stackMaxSize = stackMaxSize;
-
+    public Transputer() {
         // initialize registers
         int n = Assembly.registers.length;
         registerStates = new RegisterState[n];
@@ -266,7 +279,7 @@ public class Transputer {
 
         for (int i = 0; i < n; ++i) {
             OpDefinition opdef = Assembly.opdefs[i];
-            instructionExecutors[i++] = instructionExecutorByName.get(opdef.instructionName);
+            instructionExecutors[opdef.id] = instructionExecutorByName.get(opdef.instructionName);
         }
 
         for (int i = 0; i < n; ++i) {
@@ -281,7 +294,10 @@ public class Transputer {
     /**
      * Execute a single instruction.
      */
-    public void forward() {
+    public boolean forward() {
+        if (instrCursor >= instructions.size() || instrCursor < 0)
+            return false;
+
         Instruction instr = instructions.get(instrCursor);
         InstrExecutor instrExec = instructionExecutors[instr.opdef.id];
         int newInstrCursor = instrExec.execute(instr);
@@ -290,6 +306,9 @@ public class Transputer {
             instrCursor = newInstrCursor;
         else
             instrCursor += 1;
+
+        lastInstruction = instr;
+        return true;
     }
 
     public void reset() {
