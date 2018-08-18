@@ -15,10 +15,31 @@ public class Sector {
     public boolean broken = false;
 
 
+    public final boolean originallyBroken;
+
+
+    public Sector() {
+        this(false);
+    }
+
+    public Sector(boolean originallyBroken) {
+        this.originallyBroken = originallyBroken;
+        this.broken = originallyBroken;
+    }
+
+    public void reset() {
+        written = false;
+        broken = originallyBroken;
+    }
+
+    public void write(byte value) {
+        // let's ditch the value for now
+        written = true;
+    }
+
+
     public static Sector newBroken() {
-        Sector s = new Sector();
-        s.broken = true;
-        return s;
+        return new Sector(true);
     }
 
     @Override

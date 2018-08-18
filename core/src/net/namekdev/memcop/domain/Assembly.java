@@ -250,6 +250,8 @@ public abstract class Assembly {
                         if (reg == null)
                             throw new AssemblyCompilationError("Register `" + token + "` does not exist", line);
 
+                        // TODO instruction: check whether it is readable or writable
+
                         instrArg.constVal = reg.id;
                     }
 

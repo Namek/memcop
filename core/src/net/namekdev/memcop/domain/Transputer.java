@@ -27,6 +27,8 @@ public class Transputer {
         int execute(Instruction instr);
     }
 
+    IInputMemory sourceMemory;
+    IOutputMemory destMemory;
 
     /**
      * Defines a position before given instruction is executed.
@@ -322,8 +324,10 @@ public class Transputer {
     }
 
     private void storeDestinationByte(int destIndex, int srcByte) {
+        destMemory.saveByte(destIndex, (byte)srcByte);
     }
 
     private int loadSourceByte() {
+        return sourceMemory.readSourceByte();
     }
 }
