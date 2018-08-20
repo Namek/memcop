@@ -14,8 +14,7 @@ public abstract class Assembly {
         reg("$a", true, true),
         reg("$b", true, true),
         reg("$c", true, true),
-        reg("$d", true, true),
-        reg("$di", true, true)
+        reg("$d", true, true)
     };
     public static TreeMap<String, Register> registerByName = new TreeMap<String, Register>();
 
@@ -162,7 +161,7 @@ public abstract class Assembly {
     private static Pattern constRegex = Pattern.compile("-?\\d+");
     private static Pattern registerRegex = Pattern.compile("\\$[a-z][a-z0-9]?");
 
-    public static List<Instruction> compile(String code) throws AssemblyCompilationError {
+    public static List<Instruction> compile(String code, Level level) throws AssemblyCompilationError {
         final TreeMap<String, Label> labels = new TreeMap<String, Label>();
 
         // 1. scan for labels

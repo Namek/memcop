@@ -3,9 +3,7 @@ package net.namekdev.memcop;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.I18NBundle;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.github.czyzby.kiwi.util.gdx.asset.Disposables;
 import com.github.czyzby.lml.parser.LmlParser;
 import com.github.czyzby.lml.util.LmlApplicationListener;
@@ -23,12 +21,12 @@ public class MemcopGame extends LmlApplicationListener {
         batch = new SpriteBatch();
 
         // dpi
-        float s = Gdx.graphics.getPpiX() / 96f;
+        float s = 1;// Gdx.graphics.getPpiX() / 96f;
         int w = (int)(WIDTH * s);
         int h = (int)(HEIGHT * s);
         Gdx.graphics.setWindowedMode(w, h);
 
-        setView(MemoryView.class);
+        setView(GameView.class);
 
 
         //saveDtdSchema(Gdx.files.local("lml.dtd"));

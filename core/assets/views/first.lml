@@ -33,16 +33,17 @@
         <label>Memory: destination</label>
         <separator growx="true" padtop="3" padbottom="6" />
 
-        {=$memoryBlocksPerRow}
+        <!--<:actor method="getTestActor" />-->
 
         <:calculate key="memtotalwidth">
-            $memoryBlocksPerRow * (22+2) + 2
+            $sectorsPerRow * (22+2) + 2
         </:calculate>
         <container minwidth="{memtotalwidth}" fill="true">
             <gridgroup itemsize="22" spacing="2">
-                <:for element="$memoryBlocks">
-                    <textbutton focusborderenabled="false">{element}</textbutton>
-                </:for>
+                <:foreach element="$sectors">
+                    <:calculate key="sectorColor">true</:calculate>
+                    <textbutton focusborderenabled="false" >{element}</textbutton>
+                </:foreach>
             </gridgroup>
         </container>
     </table>
