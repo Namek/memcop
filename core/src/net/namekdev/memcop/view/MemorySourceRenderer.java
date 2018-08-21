@@ -1,9 +1,11 @@
 package net.namekdev.memcop.view;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import net.namekdev.memcop.Assets;
 import net.namekdev.memcop.domain.MemorySource;
+import net.namekdev.memcop.domain.Sector;
 
 public class MemorySourceRenderer extends Actor {
     public MemorySource memSource;
@@ -28,10 +30,13 @@ public class MemorySourceRenderer extends Actor {
         final int tiy = lastTouchedIndex / iw;
 
         float y = getY() + getHeight() - CELL_SIZE;
-        for (int iy = 0; iy < ih; ++iy) {
+        for (int iy = 0, i = 0; iy < ih; ++iy) {
             float x = getX();
-            for (int ix = 0; ix < iw; ++ix) {
-                batch.draw(Assets.gray, x, y, CELL_SIZE, CELL_SIZE);
+            for (int ix = 0; ix < iw && i < memSource.sectors.size; ++ix, ++i) {
+                Sector sector = memSource.sectors.get(i);
+
+                TextureRegion color = sector.broken ? Assets.red : Assets.gray;
+                batch.draw(color, x, y, CELL_SIZE, CELL_SIZE);
 
                 if (ix == tix && iy == tiy) {
                     batch.draw(Assets.white, x, y, CELL_SIZE, CELL_SIZE/5);

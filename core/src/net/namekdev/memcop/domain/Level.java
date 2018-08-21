@@ -28,10 +28,10 @@ public class Level {
     }
 
     public static Level create2() {
-        int w = 12, h = 15, size = 12 * 15;
-        Array<Sector> sectors = GdxArrays.newArray(size);
-        sectors.setSize(size);
-        for (int i = 0; i < size; ++i)
+        int w = 12, h = 15, outputSize = 12 * 15, inputSize = 48;
+        Array<Sector> sectors = GdxArrays.newArray(outputSize);
+        sectors.setSize(outputSize);
+        for (int i = 0; i < outputSize; ++i)
             sectors.set(i, new Sector());
 
         int y = 0;
@@ -46,17 +46,17 @@ public class Level {
                 startX += 1;
 
             int i = y * w + startX;
-            if (i >= size) break;
+            if (i >= outputSize) break;
             sectors.set(i, Sector.newBroken());
             brokenSectors += 1;
 
             i += 3;
-            if (i >= size) break;
+            if (i >= outputSize) break;
             sectors.set(i, Sector.newBroken());
             brokenSectors += 1;
 
             i += 5;
-            if (i >= size) break;
+            if (i >= outputSize) break;
             sectors.set(i, Sector.newBroken());
             brokenSectors += 1;
 
@@ -65,7 +65,7 @@ public class Level {
         }
         while (y < h);
 
-        MemorySource inputMem = new MemorySource(w, (size - brokenSectors)/3);
+        MemorySource inputMem = new MemorySource(w, inputSize);
         inputMem.canReadFrom = true;
 
         MemorySource outputMem = new MemorySource(w, sectors);
