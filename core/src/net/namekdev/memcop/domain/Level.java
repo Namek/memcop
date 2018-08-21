@@ -66,7 +66,11 @@ public class Level {
         while (y < h);
 
         MemorySource inputMem = new MemorySource(w, (size - brokenSectors)/3);
+        inputMem.canReadFrom = true;
+
         MemorySource outputMem = new MemorySource(w, sectors);
+        outputMem.canWriteTo = true;
+        outputMem.canWriteToSpecificIndex = true;
 
         return new Level(inputMem, outputMem);
     }

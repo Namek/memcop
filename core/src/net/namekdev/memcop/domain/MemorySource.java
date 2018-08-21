@@ -41,6 +41,7 @@ public class MemorySource {
             throw new Error("this memory can't be read from");
 
         int index = canReadFromSpecificIndex ? requestedIndex : ++lastPos;
+        lastPos = index;
 
         return (byte) sectors.get(index).value();
     }
@@ -55,8 +56,13 @@ public class MemorySource {
         if (sector == null)
             return false;
 
+        lastPos = index;
         sector.write(value);
         return true;
+    }
+
+    public int getLastPos() {
+        return lastPos;
     }
 
     public int getTotalHeight() {

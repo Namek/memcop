@@ -179,7 +179,7 @@ public class Transputer {
                 return -1;
             }
         });
-        put("ldb", new InstrExecutor() {
+        put("ldi", new InstrExecutor() {
             @Override
             public int execute(Instruction instr) {
                 RegisterState reg = getReg(instr.args[0]);
@@ -188,7 +188,7 @@ public class Transputer {
                 return -1;
             }
         });
-        put("stb", new InstrExecutor() {
+        put("sti", new InstrExecutor() {
             @Override
             public int execute(Instruction instr) {
                 int srcByte = getValue(instr.args[0]);

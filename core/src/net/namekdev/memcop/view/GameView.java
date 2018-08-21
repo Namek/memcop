@@ -41,22 +41,26 @@ public class GameView extends AbstractLmlView {
 
         level.reset();
         transputer.reset();
+    }
+
+    @Override
+    public void show() {
+        String code = "" +
+                "mov 5 $a\n" +
+                "mov 0 $b\n" +
+                "_start:\n" +
+                "add $b 1 $b\n" +
+                "cmp $b $a\n" +
+                "ldi $c\n" +
+                "jge _start\n" +
+                "sub $b 2 $b\n" + //expecting b = 4
+                "\n" +
+                "_end:\n" +
+                "mov $b $c";
 
         try {
-            transputer.instructions = Assembly.compile("" +
-                    "mov 5 $a\n" +
-                    "mov 0 $b\n" +
-                    "_start:\n" +
-                    "add $b 2 $b\n" +
-                    "cmp $b $a\n" +
-                    "jge _start\n" +
-                    "sub $b 2 $b\n" + //expecting b = 4
-                    "\n" +
-                    "_end:\n" +
-                    "mov $b $c",
-
-                    level
-            );
+            transputer.instructions = Assembly.compile(code, level);
+            codeInput.setText(code);
 
             while (transputer.forward()) {}
             int c = transputer.registerStates[3].value;

@@ -23,12 +23,20 @@ public class MemorySourceRenderer extends Actor {
 
         final int iw = memSource.sectorsPerRow;
         final int ih = memSource.getTotalHeight();
+        final int lastTouchedIndex = memSource.getLastPos();
+        final int tix = lastTouchedIndex % iw;
+        final int tiy = lastTouchedIndex / iw;
 
         float y = getY() + getHeight() - CELL_SIZE;
         for (int iy = 0; iy < ih; ++iy) {
             float x = getX();
             for (int ix = 0; ix < iw; ++ix) {
                 batch.draw(Assets.gray, x, y, CELL_SIZE, CELL_SIZE);
+
+                if (ix == tix && iy == tiy) {
+                    batch.draw(Assets.white, x, y, CELL_SIZE, CELL_SIZE/5);
+                }
+
                 x += CELL_SIZE + PADDING;
             }
             y -= CELL_SIZE + PADDING;
