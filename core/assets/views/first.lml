@@ -23,6 +23,9 @@
         <scrollpane filly="true" >
             <container fillparent="true" width="180">
                 <highlighttextarea
+                    highlighter="codeHighlighter"
+                    id="codeInput"
+                    focusborder="false"
                     message="If you need help... hit F1"
                     text="mov s1 20\n" />
             </container>
