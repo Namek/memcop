@@ -49,9 +49,10 @@ public class GameView extends AbstractLmlView {
                 "mov 5 $a\n" +
                 "mov 0 $b\n" +
                 "_start:\n" +
-                "add $b 1 $b\n" +
-                "cmp $b $a\n" +
                 "ldi $c\n" +
+                "sti $c $b\n" +
+                "inc $b\n" +
+                "cmp $b $a\n" +
                 "jge _start\n" +
                 "sub $b 2 $b\n" + //expecting b = 4
                 "\n" +

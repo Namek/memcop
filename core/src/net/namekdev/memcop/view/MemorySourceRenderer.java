@@ -35,7 +35,14 @@ public class MemorySourceRenderer extends Actor {
             for (int ix = 0; ix < iw && i < memSource.sectors.size; ++ix, ++i) {
                 Sector sector = memSource.sectors.get(i);
 
-                TextureRegion color = sector.broken ? Assets.red : Assets.gray;
+                TextureRegion color = Assets.gray;
+
+                if (sector.written)
+                    color = Assets.green;
+
+                if (sector.broken)
+                    color = Assets.red;
+
                 batch.draw(color, x, y, CELL_SIZE, CELL_SIZE);
 
                 if (ix == tix && iy == tiy) {

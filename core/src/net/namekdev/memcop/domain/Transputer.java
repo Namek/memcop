@@ -127,6 +127,22 @@ public class Transputer {
                 return -1;
             }
         });
+        put("inc", new InstrExecutor() {
+            @Override
+            public int execute(Instruction instr) {
+                getReg(instr.args[0]).value += 1;
+
+                return -1;
+            }
+        });
+        put("dec", new InstrExecutor() {
+            @Override
+            public int execute(Instruction instr) {
+                getReg(instr.args[0]).value -= 1;
+
+                return -1;
+            }
+        });
         put("push", new InstrExecutor() {
             @Override
             public int execute(Instruction instr) {

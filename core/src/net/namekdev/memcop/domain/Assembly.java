@@ -32,6 +32,8 @@ public abstract class Assembly {
         op("and", $Value, $Value, $OutRegister).describe("a & b -> c"),
         op("orl", $Value, $Value, $OutRegister).describe("a || b -> c"),
         op("xor", $Value, $Value, $OutRegister).describe("a ^ b -> c"),
+        op("inc", $OutRegister).describe("increment value in register"),
+        op("dec", $OutRegister).describe("decrement value in register"),
         op("push", $Value).describe("push value on stack"),
         op("pop", $OutRegister).describe("remove top value from the stack and put it into specified register"),
         op("top", $OutRegister).describe("get top stack value stack without removing it"),
