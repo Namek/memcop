@@ -65,7 +65,7 @@ public class Level {
         }
         while (y < h);
 
-        MemorySource inputMem = new MemorySource(w, size - brokenSectors);
+        MemorySource inputMem = new MemorySource(w, (size - brokenSectors)/3);
         MemorySource outputMem = new MemorySource(w, sectors);
 
         return new Level(inputMem, outputMem);

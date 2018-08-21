@@ -30,9 +30,12 @@
     </table>
 
     <table onecolumn="true" filly="true" tablealign="top">
+        <label>Memory: source</label>
+        <separator growx="true" padtop="3" padbottom="6" />
+        <:actor method="getInputMemActor" />
+
         <label>Memory: destination</label>
         <separator growx="true" padtop="3" padbottom="6" />
-
         <:actor method="getOutputMemActor" />
     </table>
 

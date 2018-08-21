@@ -91,8 +91,13 @@ public class GameView extends AbstractLmlView {
         // TODO button
     }
 
+    @LmlAction("getInputMemActor")
+    public Actor getInputMemActor() {
+        return new MemorySourceRenderer(level.inputMem);
+    }
+
     @LmlAction("getOutputMemActor")
-    public Actor getOutputMemActor___() {
+    public Actor getOutputMemActor() {
         return new MemorySourceRenderer(level.outputMem);
     }
 }
