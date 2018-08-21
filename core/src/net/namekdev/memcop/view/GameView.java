@@ -1,4 +1,4 @@
-package net.namekdev.memcop;
+package net.namekdev.memcop.view;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.github.czyzby.lml.annotation.LmlAction;
 import com.github.czyzby.lml.annotation.LmlActor;
 import com.github.czyzby.lml.parser.impl.AbstractLmlView;
+import net.namekdev.memcop.MemcopGame;
 import net.namekdev.memcop.domain.Assembly;
 import net.namekdev.memcop.domain.Assembly.AssemblyCompilationError;
 import net.namekdev.memcop.domain.Level;
@@ -90,16 +91,8 @@ public class GameView extends AbstractLmlView {
         // TODO button
     }
 
-    @LmlAction("sectors")
-    public Array<Sector> getSectorsBlocks() {
-        return level.outputMem.sectors;
+    @LmlAction("getOutputMemActor")
+    public Actor getOutputMemActor___() {
+        return new MemorySourceRenderer(level.outputMem);
     }
-
-    @LmlAction("sectorsPerRow")
-    public int sectorsPerRow() { return level.outputMem.viewWidth; }
-
-
-//    public Actor getTestActor() {
-//
-//    }
 }

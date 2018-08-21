@@ -3,12 +3,15 @@ package net.namekdev.memcop;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.github.czyzby.kiwi.util.gdx.asset.Disposables;
 import com.github.czyzby.lml.parser.LmlParser;
 import com.github.czyzby.lml.util.LmlApplicationListener;
 import com.github.czyzby.lml.vis.util.VisLml;
 import com.kotcrab.vis.ui.VisUI;
+import net.namekdev.memcop.view.GameView;
 
 public class MemcopGame extends LmlApplicationListener {
     public static final int WIDTH = 900, HEIGHT = 600;
@@ -26,7 +29,10 @@ public class MemcopGame extends LmlApplicationListener {
         int h = (int)(HEIGHT * s);
         Gdx.graphics.setWindowedMode(w, h);
 
+        Assets.load();
+
         setView(GameView.class);
+
 
 
         //saveDtdSchema(Gdx.files.local("lml.dtd"));
@@ -44,6 +50,7 @@ public class MemcopGame extends LmlApplicationListener {
         super.dispose();
         Disposables.disposeOf(batch);
         VisUI.dispose();
+        Assets.disposeAll();
     }
 
     @Override
