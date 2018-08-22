@@ -16,7 +16,11 @@ public class MemorySourceRenderer extends Actor {
     static final Color COLOR_WRITTEN = new Color(0.137f, 0.607f, 0.262f, 1f);
     static final Color COLOR_UNTOUCHED = Color.DARK_GRAY;
     static final Color COLOR_BROKEN = Color.valueOf("9b311d");
+    static final Color COLOR_FILLED_OK_MIN = Color.valueOf("443aad");
+    static final Color COLOR_FILLED_OK_MAX = Color.valueOf("0c0463");
     static final Color COLOR_CURSOR = Color.valueOf("eeeeee");
+
+    public static boolean drawGoal = true;
 
 
     public MemorySourceRenderer(MemorySource memSource) {
@@ -28,7 +32,6 @@ public class MemorySourceRenderer extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
-//        PolygonSpriteBatch batch = (PolygonSpriteBatch) _batch;
         super.draw(batch, parentAlpha);
 
         final int iw = memSource.sectorsPerRow;
@@ -47,8 +50,13 @@ public class MemorySourceRenderer extends Actor {
                 if (sector.written)
                     cellBg = COLOR_WRITTEN;
 
-                if (sector.broken)
+                if (sector.broken) {
                     cellBg = COLOR_BROKEN;
+                }
+                else if (drawGoal && sector.markedForGradient) {
+                    cellBg = getColor();
+                    cellBg.set(COLOR_FILLED_OK_MIN).lerp(COLOR_FILLED_OK_MAX, sector.levelInputGradient);
+                }
 
                 batch.setColor(cellBg);
                 batch.draw(Assets.white, x, y, CELL_SIZE, CELL_SIZE);

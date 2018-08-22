@@ -3,10 +3,70 @@ package net.namekdev.memcop.domain;
 import com.badlogic.gdx.utils.Array;
 import com.github.czyzby.kiwi.util.gdx.collection.GdxArrays;
 
+import java.util.Iterator;
+
 @SuppressWarnings("ALL")
 public class Level {
     public static final char EMPTY_SECTOR = ' ';
     public static final char BAD_SECTOR = '✕';
+
+    public MemorySource inputMem;
+    public MemorySource outputMem;
+    public int copyTimes = 1;
+    public int copyLength;
+    public int indexStartInput = 0;
+    public int indexStartOutput = 0;
+    public CompletionValidator validator;
+
+    public Level(MemorySource inputMem, MemorySource outputMem, int indexStartInput, int indexStartOutput, int copyLength, int copyTimes) {
+        this.inputMem = inputMem;
+        this.outputMem = outputMem;
+        this.copyLength = copyLength;
+        this.copyTimes = copyTimes;
+        this.indexStartInput = indexStartInput;
+        this.indexStartOutput = indexStartOutput;
+        this.validator = new SequentialCopyValidator(indexStartInput, indexStartOutput, copyLength, copyTimes);
+    }
+
+    public Level(MemorySource inputMem, MemorySource outputMem, int copyTimes) {
+        this(inputMem, outputMem, 0, 0, inputMem.validSectorsCount, copyTimes);
+    }
+
+    public void reset() {
+        inputMem.reset();
+        outputMem.reset();
+
+        final CopyWalker inputWalker = new CopyWalker(inputMem, indexStartInput, copyLength, 1);
+        final CopyWalker outputWalker = new CopyWalker(outputMem, indexStartOutput, copyLength, copyTimes);
+
+        while (outputWalker.hasNext()) {
+            if (!inputWalker.hasNext())
+                inputWalker.reset();
+
+            Sector inputSector = inputWalker.next();
+            Sector outputSector = outputWalker.next();
+
+            float p = inputWalker.getProgress();
+            inputSector.markForGradient(p);
+            outputSector.markForGradient(p);
+        }
+    }
+
+    public static Level create(int index) {
+        Level l = null;
+        switch (index) {
+            case 0: l = create0(); break;
+            case 1: l = create1(); break;
+            case 2: l = create2(); break;
+            case 3: l = create3(); break;
+            case 4: l = create4(); break;
+            default: throw new Error("unknown level number: " + index);
+        }
+        l.reset();
+
+        return l;
+    }
+
 
     public interface CompletionValidator {
         boolean validateLevelCompletion(Level level);
@@ -17,78 +77,128 @@ public class Level {
         private final int iOutputStart;
         private final int length;
         private final int times;
+        private final int totalToCopy;
 
         public SequentialCopyValidator(int iInputStart, int iOutputStart, int length, int times) {
             this.iInputStart = iInputStart;
             this.iOutputStart = iOutputStart;
             this.length = length;
             this.times = times;
+            this.totalToCopy = length * times;
         }
 
         @Override
         public boolean validateLevelCompletion(Level level) {
-            final int totalToCopy = length * times;
+            final CopyWalker inputWalker = new CopyWalker(level.inputMem, iInputStart, length, 1);
+            final CopyWalker outputWalker = new CopyWalker(level.outputMem, iOutputStart, length, times);
 
-            int spaceLeft = 0;
-            int iSrc = 0, iDst = 0, seqCopied = 0, totalCopied = 0;
-            for (; totalCopied < totalToCopy;) {
-                Sector src = level.inputMem.sectors.get(iSrc);
-                Sector dst = level.outputMem.sectors.get(iDst);
+            int seqCopied = 0, totalCopied = 0;
 
-                while (!src.broken) {
-                    src = level.inputMem.sectors.get(++iSrc);
-                }
+            do {
+                boolean hasInput = inputWalker.hasNext();
+                boolean hasOutput = outputWalker.hasNext();
 
-                while (!dst.broken) {
-                    dst = level.inputMem.sectors.get(++iDst);
-                }
+                if (!hasInput || !hasOutput)
+                    break;
+
+                Sector src = inputWalker.next();
+                Sector dst = outputWalker.next();
 
                 if (src.value() == dst.value()) {
-                    ++seqCopied;
                     ++totalCopied;
                 }
                 else {
                     return false;
                 }
 
-                if (seqCopied == length) {
-                    iSrc = 0;
-                }
-            }
+            } while (true);
 
             return totalCopied >= totalToCopy;
         }
     }
 
-    public MemorySource inputMem;
-    public MemorySource outputMem;
-    public CompletionValidator validator;
 
-    public Level(MemorySource inputMem, MemorySource outputMem, CompletionValidator validator) {
-        this.inputMem = inputMem;
-        this.outputMem = outputMem;
-        this.validator = validator;
-    }
+    public static class CopyWalker implements Iterator<Sector> {
+        private final MemorySource memSource;
+        private final int indexStart;
+        private final int length;
+        private final int times;
+        private final int totalToCopy;
 
-    public Level(MemorySource inputMem, MemorySource outputMem, int copyTimes) {
-        this(inputMem, outputMem, new SequentialCopyValidator(0, 0, inputMem.validSectorsCount, copyTimes));
-    }
+        private int index, seqCopied, totalCopied;
+        private Sector sector = null;
+        private float progress;
 
-    public void reset() {
-        inputMem.reset();
-        outputMem.reset();
-    }
+        private boolean nextExplored = false, hasNext = false;
 
-    public static Level create(int index) {
-        switch (index) {
-            case 0: return create0();
-            case 1: return create1();
-            case 2: return create2();
-            case 3: return create3();
-            case 4: return create4();
-            default: throw new Error("unknown level number: " + index);
+
+        public CopyWalker(MemorySource memSource, int indexStart, int length, int times) {
+            this.memSource = memSource;
+            this.indexStart = indexStart;
+            this.length = length;
+            this.times = times;
+            this.totalToCopy = length * times;
+
+            reset();
+        }
+
+        @Override
+        public boolean hasNext() {
+            tryMoveForward();
+
+            return hasNext;
+        }
+
+        @Override
+        public Sector next() {
+            tryMoveForward();
+            nextExplored = false;
+            return sector;
+        }
+
+        public float getProgress() {
+            return progress;
+        }
+
+        public void reset() {
+            index = indexStart;
+            seqCopied = 0;
+            totalCopied = 0;
+            progress = 0;
+            nextExplored = false;
+            hasNext = false;
+        }
+
+        private void tryMoveForward() {
+            if (nextExplored)
+                return;
+
+            nextExplored = true;
+
+            if (totalCopied >= totalToCopy) {
+                hasNext = false;
+                return;
+            }
+
+            if (index == length) {
+                seqCopied = 0;
+            }
+
+            sector = memSource.sectors.get(index++);
+
+            while (sector.broken) {
+                sector = memSource.sectors.get(index++);
+            }
+            ++seqCopied;
+            ++totalCopied;
+
+            progress = seqCopied / (float)length;
+
+            hasNext = true;
         }
     }
+
+
 
     // there are no broken sectors, copy the memory once
     public static Level create0() {

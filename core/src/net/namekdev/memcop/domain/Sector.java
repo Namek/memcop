@@ -22,6 +22,8 @@ public class Sector {
     public final boolean originallyBroken;
 
     private int value;
+    public float levelInputGradient = 0f;
+    public boolean markedForGradient;
 
 
     public Sector() {
@@ -30,15 +32,15 @@ public class Sector {
     }
 
     public Sector(boolean originallyBroken) {
-        reset();
         this.originallyBroken = originallyBroken;
-        this.broken = originallyBroken;
+        reset();
     }
 
     public void reset() {
         written = false;
         broken = originallyBroken;
-        value = broken ? random.nextInt()  : 0;
+        value = broken ? random.nextInt() : 0;
+        levelInputGradient = 0;
     }
 
     public boolean isWritable() {
@@ -55,6 +57,10 @@ public class Sector {
         return value;
     }
 
+    public void markForGradient(float gradient) {
+        this.levelInputGradient = gradient;
+        this.markedForGradient = true;
+    }
 
     public static Sector newBroken() {
         return new Sector(true);

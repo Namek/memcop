@@ -39,7 +39,6 @@ public class GameView extends AbstractLmlView {
         transputer.sourceMemory = level.inputMem;
         transputer.destMemory = level.outputMem;
 
-        level.reset();
         transputer.reset();
     }
 
