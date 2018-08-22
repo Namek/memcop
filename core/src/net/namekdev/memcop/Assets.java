@@ -10,14 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Assets {
-    public static TextureRegion gray, red, green, white;
+    public static TextureRegion white;
 
     public static final List<Disposable> disposables = new ArrayList<Disposable>();
 
     public static void load() {
-        gray = genColorTex(Color.GRAY);
-        red = genColorTex(Color.RED);
-        green = genColorTex(Color.GREEN);
         white = genColorTex(Color.WHITE);
     }
 

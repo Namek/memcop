@@ -1,6 +1,8 @@
 package net.namekdev.memcop.view;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import net.namekdev.memcop.Assets;
@@ -11,6 +13,11 @@ public class MemorySourceRenderer extends Actor {
     public MemorySource memSource;
     public static final int PADDING = 2;
     public static final int CELL_SIZE = 22;
+    static final Color COLOR_WRITTEN = new Color(0.137f, 0.607f, 0.262f, 1f);
+    static final Color COLOR_UNTOUCHED = Color.DARK_GRAY;
+    static final Color COLOR_BROKEN = Color.valueOf("9b311d");
+    static final Color COLOR_CURSOR = Color.valueOf("eeeeee");
+
 
     public MemorySourceRenderer(MemorySource memSource) {
         this.memSource = memSource;
@@ -21,6 +28,7 @@ public class MemorySourceRenderer extends Actor {
 
     @Override
     public void draw(Batch batch, float parentAlpha) {
+//        PolygonSpriteBatch batch = (PolygonSpriteBatch) _batch;
         super.draw(batch, parentAlpha);
 
         final int iw = memSource.sectorsPerRow;
@@ -34,18 +42,19 @@ public class MemorySourceRenderer extends Actor {
             float x = getX();
             for (int ix = 0; ix < iw && i < memSource.sectors.size; ++ix, ++i) {
                 Sector sector = memSource.sectors.get(i);
-
-                TextureRegion color = Assets.gray;
+                Color cellBg = COLOR_UNTOUCHED;
 
                 if (sector.written)
-                    color = Assets.green;
+                    cellBg = COLOR_WRITTEN;
 
                 if (sector.broken)
-                    color = Assets.red;
+                    cellBg = COLOR_BROKEN;
 
-                batch.draw(color, x, y, CELL_SIZE, CELL_SIZE);
+                batch.setColor(cellBg);
+                batch.draw(Assets.white, x, y, CELL_SIZE, CELL_SIZE);
 
                 if (ix == tix && iy == tiy) {
+                    batch.setColor(COLOR_CURSOR);
                     batch.draw(Assets.white, x, y, CELL_SIZE, CELL_SIZE/5);
                 }
 
@@ -53,6 +62,8 @@ public class MemorySourceRenderer extends Actor {
             }
             y -= CELL_SIZE + PADDING;
         }
+
+        batch.setColor(Color.WHITE);
     }
 
     @Override

@@ -2,6 +2,7 @@ package net.namekdev.memcop;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.I18NBundle;
@@ -15,13 +16,14 @@ import net.namekdev.memcop.view.GameView;
 
 public class MemcopGame extends LmlApplicationListener {
     public static final int WIDTH = 900, HEIGHT = 600;
-    private SpriteBatch batch;
+    private Batch batch;
 
 
     @Override
     public void create() {
         super.create();
         batch = new SpriteBatch();
+        batch.enableBlending();
 
         // dpi
         float s = 1;// Gdx.graphics.getPpiX() / 96f;
