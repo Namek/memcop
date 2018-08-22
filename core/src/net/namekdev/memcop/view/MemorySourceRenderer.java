@@ -46,6 +46,8 @@ public class MemorySourceRenderer extends Actor {
             for (int ix = 0; ix < iw && i < memSource.sectors.size; ++ix, ++i) {
                 Sector sector = memSource.sectors.get(i);
                 Color cellBg = COLOR_UNTOUCHED;
+                Color cursorColor = COLOR_CURSOR;
+                boolean renderCursor = ix == tix && iy == tiy;
 
                 if (sector.written)
                     cellBg = COLOR_WRITTEN;
@@ -56,13 +58,20 @@ public class MemorySourceRenderer extends Actor {
                 else if (drawGoal && sector.markedForGradient) {
                     cellBg = getColor();
                     cellBg.set(COLOR_FILLED_OK_MIN).lerp(COLOR_FILLED_OK_MAX, sector.levelInputGradient);
+
+                    if (sector.written && !sector.broken) {
+                        if (!renderCursor)
+                            cursorColor = COLOR_WRITTEN;
+
+                        renderCursor = true;
+                    }
                 }
 
                 batch.setColor(cellBg);
                 batch.draw(Assets.white, x, y, CELL_SIZE, CELL_SIZE);
 
-                if (ix == tix && iy == tiy) {
-                    batch.setColor(COLOR_CURSOR);
+                if (renderCursor) {
+                    batch.setColor(cursorColor);
                     batch.draw(Assets.white, x, y, CELL_SIZE, CELL_SIZE/5);
                 }
 
