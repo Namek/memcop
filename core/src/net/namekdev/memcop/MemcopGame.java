@@ -25,12 +25,6 @@ public class MemcopGame extends LmlApplicationListener {
         batch = new SpriteBatch();
         batch.enableBlending();
 
-        // dpi
-        float s = 1;// Gdx.graphics.getPpiX() / 96f;
-        int w = (int)(WIDTH * s);
-        int h = (int)(HEIGHT * s);
-        Gdx.graphics.setWindowedMode(w, h);
-
         Assets.load();
 
         setView(GameView.class);
