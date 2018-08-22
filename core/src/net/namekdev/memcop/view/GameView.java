@@ -28,7 +28,7 @@ public class GameView extends AbstractLmlView {
     @LmlActor("codeInput") private HighlightTextArea codeInput;
 
 
-    public Level level = Level.create2();
+    public Level level = Level.create(4);
     public Transputer transputer;
 
 
