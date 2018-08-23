@@ -5,16 +5,30 @@
     <table onecolumn="true" filly="true" tablealign="top">
         <label>Memory: source</label>
         <separator growx="true" padtop="3" padbottom="6" />
-        <label>40 bytes to copy</label>
+        <label>$goalDescription</label>
+        <textbutton text="Show Goal" />
 
         <container height="40" />
         <label>Debug</label>
         <separator growx="true" padtop="3" padbottom="6" />
-        <label>Copied: 0/40</label>
 
-        <textbutton click="run">Run</textbutton>
-        <textbutton click="debug">Debug</textbutton>
-        <textbutton click="reset">Reset</textbutton>
+        <table>
+            <label>reg</label>
+            <label padleft="4" row="true">val</label>
+            <:each element="$registers">
+                <label>{element}</label>
+                <container padleft="4" align="left" row="true">
+                    <:actor method="createRegisterValueLabel">{element}</:actor>
+                </container>
+            </:each>
+        </table>
+
+        <separator growx="true" padtop="3" padbottom="6" height="0" />
+
+
+        <textbutton id="btnRun" onclick="run">Run</textbutton>
+        <textbutton id="btnDebug" onclick="debug">Debug</textbutton>
+        <textbutton id="btnStop" onclick="stop">Stop</textbutton>
     </table>
 
     <table onecolumn="true" filly="true" tablealign="top">

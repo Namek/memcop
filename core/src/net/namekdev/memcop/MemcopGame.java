@@ -27,18 +27,13 @@ public class MemcopGame extends LmlApplicationListener {
 
         Assets.load();
 
-        setView(GameView.class);
+        GameView view = new GameView(batch);
+        initiateView(view);
+        setView(view);
 
 
 
         //saveDtdSchema(Gdx.files.local("lml.dtd"));
-    }
-
-    /**
-     * @return application's only {@link Batch}.
-     */
-    public Batch getBatch() {
-        return batch;
     }
 
     @Override

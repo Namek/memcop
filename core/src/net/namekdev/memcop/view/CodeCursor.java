@@ -30,9 +30,8 @@ public class CodeCursor extends Actor {
         if (instr == null)
             return;
 
-        Assembly.Instruction lastInstr = transputer.instructions.get(transputer.instructions.size() - 1);
         float lineHeight = codeInput.getStyle().font.getLineHeight();
-        float y = codeInput.getHeight() - (instr.lineNumber) * lineHeight + 4;
+        float y = codeInput.getHeight() - instr.lineNumber * lineHeight + 4;
 
         batch.setColor(COLOR_CURSOR);
         batch.draw(Assets.white, 0, y, codeInput.getWidth(), lineHeight - 2);
