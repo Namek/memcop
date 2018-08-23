@@ -310,7 +310,7 @@ public class Transputer {
     /**
      * Execute a single instruction.
      */
-    public boolean forward() {
+    public boolean step() {
         if (instrCursor >= instructions.size() || instrCursor < 0)
             return false;
 
@@ -333,6 +333,7 @@ public class Transputer {
             reg.value = 0;
         }
         lastComparison = 0;
+        lastInstruction = null;
         stack.clear();
     }
 

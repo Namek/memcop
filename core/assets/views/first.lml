@@ -12,9 +12,9 @@
         <separator growx="true" padtop="3" padbottom="6" />
         <label>Copied: 0/40</label>
 
-        <textbutton>Run</textbutton>
-        <textbutton>Step</textbutton>
-        <textbutton>Reset</textbutton>
+        <textbutton click="run">Run</textbutton>
+        <textbutton click="debug">Debug</textbutton>
+        <textbutton click="reset">Reset</textbutton>
     </table>
 
     <table onecolumn="true" filly="true" tablealign="top">
@@ -24,7 +24,7 @@
             <container fillparent="true" width="180">
                 <stack>
                     <:actor method="codeCursor" />
-                    <:actor method="codeInput"/>
+                    <:actor method="codeInput" />
                 </stack>
             </container>
         </scrollpane>

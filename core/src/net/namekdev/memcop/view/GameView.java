@@ -3,7 +3,6 @@ package net.namekdev.memcop.view;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.github.czyzby.lml.annotation.LmlAction;
 import com.github.czyzby.lml.annotation.LmlActor;
 import com.github.czyzby.lml.parser.impl.AbstractLmlView;
-import com.kotcrab.vis.ui.util.highlight.BaseHighlighter;
 import com.kotcrab.vis.ui.widget.HighlightTextArea;
 import net.namekdev.memcop.MemcopGame;
 import net.namekdev.memcop.domain.Assembly;
@@ -26,7 +24,6 @@ public class GameView extends AbstractLmlView {
     @LmlActor("random") private Label result;
 
     private final HighlightTextArea codeInput = new HighlightTextArea("");
-    private String code = "";
 
 
     public Level level = Level.create(4);
@@ -39,13 +36,12 @@ public class GameView extends AbstractLmlView {
         transputer = new Transputer();
         transputer.sourceMemory = level.inputMem;
         transputer.destMemory = level.outputMem;
-
         transputer.reset();
     }
 
     @Override
     public void show() {
-        code = "" +
+        String code = "" +
             "mov 5 $a\n" +
             "mov 0 $b\n" +
             "_start:\n" +
@@ -59,16 +55,9 @@ public class GameView extends AbstractLmlView {
             "_end:\n" +
             "mov $b $c";
 
-        try {
-            transputer.instructions = Assembly.compile(code, level);
-            codeInput.setText(code);
+        codeInput.setText(code);
 
-            while (transputer.forward()) {}
-            int c = transputer.registerStates[3].value;
-        }
-        catch (AssemblyCompilationError err) {
-            err.printStackTrace();
-        }
+        compileCode();
     }
 
 
@@ -128,7 +117,39 @@ public class GameView extends AbstractLmlView {
 
     @LmlAction("compileCode")
     public void compileCode() {
-        // TODO button
+        try {
+            final String code = codeInput.getText();
+            transputer.instructions = Assembly.compile(code, level);
+        }
+        catch (AssemblyCompilationError assemblyCompilationError) {
+            assemblyCompilationError.printStackTrace();
+        }
+    }
+
+    @LmlAction("run")
+    public void run() {
+        try {
+            final String code = codeInput.getText();
+            transputer.instructions = Assembly.compile(code, level);
+
+            //noinspection StatementWithEmptyBody
+            while (transputer.step()) { }
+        }
+        catch (AssemblyCompilationError assemblyCompilationError) {
+            assemblyCompilationError.printStackTrace();
+        }
+
+    }
+
+    @LmlAction("debug")
+    public void debug() {
+        transputer.step();
+    }
+
+    @LmlAction("reset")
+    public void reset() {
+        transputer.reset();
+        level.reset();
     }
 
 }
