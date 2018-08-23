@@ -18,7 +18,7 @@ public class MemorySourceRenderer extends Actor {
     static final Color COLOR_FILLED_OK_MAX = Color.valueOf("0c0463");
     static final Color COLOR_CURSOR = Color.valueOf("eeeeee");
 
-    public static boolean drawGoal = true;
+    public static boolean drawGoal = false;
 
 
     public MemorySourceRenderer(MemorySource memSource) {

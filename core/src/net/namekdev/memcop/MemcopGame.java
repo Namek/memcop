@@ -1,9 +1,11 @@
 package net.namekdev.memcop;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.I18NBundle;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -25,9 +27,10 @@ public class MemcopGame extends LmlApplicationListener {
         batch = new SpriteBatch();
         batch.enableBlending();
 
+        Stage stage = newStage(batch);
         Assets.load();
 
-        GameView view = new GameView(batch);
+        GameView view = new GameView(stage);
         initiateView(view);
         setView(view);
 
@@ -35,6 +38,26 @@ public class MemcopGame extends LmlApplicationListener {
 
         //saveDtdSchema(Gdx.files.local("lml.dtd"));
     }
+
+    /**
+     * @return a new customized {@link Stage} instance.
+     * @param batch
+     */
+    public static Stage newStage(Batch batch) {
+        Stage stage = new Stage(new FitViewport(MemcopGame.WIDTH, MemcopGame.HEIGHT), batch);
+
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ESCAPE)
+                    Gdx.app.exit();
+
+                return super.keyDown(event, keycode);
+            }
+        });
+        return stage;
+    }
+
 
     @Override
     public void dispose() {

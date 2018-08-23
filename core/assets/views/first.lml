@@ -6,7 +6,7 @@
         <label>Memory: source</label>
         <separator growx="true" padtop="3" padbottom="6" />
         <label>$goalDescription</label>
-        <textbutton text="Show Goal" />
+        <textbutton text="Show Goal" id="btnShowGoal" />
 
         <container height="40" />
         <label>Debug</label>

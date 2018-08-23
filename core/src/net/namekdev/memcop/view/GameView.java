@@ -1,9 +1,7 @@
 package net.namekdev.memcop.view;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -11,15 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.github.czyzby.lml.annotation.LmlAction;
-import com.github.czyzby.lml.annotation.LmlActor;
-import com.github.czyzby.lml.annotation.LmlBefore;
-import com.github.czyzby.lml.annotation.LmlInject;
+import com.github.czyzby.lml.annotation.*;
 import com.github.czyzby.lml.parser.LmlParser;
 import com.github.czyzby.lml.parser.impl.AbstractLmlView;
 import com.kotcrab.vis.ui.widget.HighlightTextArea;
-import net.namekdev.memcop.MemcopGame;
 import net.namekdev.memcop.domain.Assembly;
 import net.namekdev.memcop.domain.Assembly.AssemblyCompilationError;
 import net.namekdev.memcop.domain.Level;
@@ -34,10 +27,12 @@ import java.util.TreeMap;
 
 public class GameView extends AbstractLmlView {
     private LmlParser parser;
+    private Stage stage;
 
     @LmlActor("btnRun") public TextButton btnRun;
     @LmlActor("btnDebug") private TextButton btnDebug;
     @LmlActor("btnStop") private TextButton btnStop;
+    @LmlActor("btnShowGoal") private TextButton btnShowGoal;
 
     private final HighlightTextArea codeInput = new HighlightTextArea("");
 
@@ -47,8 +42,9 @@ public class GameView extends AbstractLmlView {
     Map<String, Label> registerValueLabels = new TreeMap<String, Label>();
 
 
-    public GameView(Batch batch) {
-        super(newStage(batch));
+    public GameView(Stage stage) {
+        super(stage);
+        this.stage = stage;
 
         transputer = new Transputer();
         transputer.sourceMemory = level.inputMem;
@@ -64,6 +60,29 @@ public class GameView extends AbstractLmlView {
     @LmlBefore
     public void before(final LmlParser parser) {
         this.parser = parser;
+    }
+
+    @LmlAfter
+    public void afterParse() {
+        btnShowGoal.addListener(new InputListener() {
+            @Override
+            public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                MemorySourceRenderer.drawGoal = true;
+                super.enter(event, x, y, pointer, fromActor);
+            }
+
+            @Override
+            public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                MemorySourceRenderer.drawGoal = false;
+                super.exit(event, x, y, pointer, toActor);
+            }
+
+            @Override
+            public boolean mouseMoved(InputEvent event, float x, float y) {
+                MemorySourceRenderer.drawGoal = true;
+                return super.mouseMoved(event, x, y);
+            }
+        });
     }
 
 
@@ -86,26 +105,6 @@ public class GameView extends AbstractLmlView {
         codeInput.setText(code);
 
         compileCode();
-    }
-
-
-    /**
-     * @return a new customized {@link Stage} instance.
-     * @param batch
-     */
-    public static Stage newStage(Batch batch) {
-        Stage stage = new Stage(new FitViewport(MemcopGame.WIDTH, MemcopGame.HEIGHT), batch);
-
-        stage.addListener(new InputListener() {
-            @Override
-            public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Input.Keys.ESCAPE)
-                    Gdx.app.exit();
-
-                return super.keyDown(event, keycode);
-            }
-        });
-        return stage;
     }
 
     @Override
@@ -161,6 +160,7 @@ public class GameView extends AbstractLmlView {
         }
         return names;
     }
+
 
     /**
      * Simulates whole program.
