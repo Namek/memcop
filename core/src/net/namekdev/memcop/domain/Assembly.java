@@ -171,10 +171,10 @@ public abstract class Assembly {
         // 0. TODO scan for comments, remove them
 
         // 1. scan for labels
-        StringTokenizer t = new StringTokenizer(code, "\r\n");
+        Scanner t = new Scanner(code);
         int line = 0;
-        while (t.hasMoreTokens()) {
-            String token = t.nextToken().trim();
+        while (t.hasNextLine()) {
+            String token = t.nextLine().trim();
             line += 1;
 
             Matcher match = labelPointRegex.matcher(token);
@@ -197,10 +197,10 @@ public abstract class Assembly {
         // 2. compile assembly
         final List<Instruction> instructions = new ArrayList<Instruction>(line);
         line = 0;
-        t = new StringTokenizer(code, "\r\n");
-        while (t.hasMoreTokens())
+        t = new Scanner(code);
+        while (t.hasNextLine())
         {
-            String lineStr = t.nextToken().trim();
+            String lineStr = t.nextLine().trim();
             line += 1;
 
             // omit empty line
