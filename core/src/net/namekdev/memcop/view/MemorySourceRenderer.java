@@ -2,8 +2,6 @@ package net.namekdev.memcop.view;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import net.namekdev.memcop.Assets;
 import net.namekdev.memcop.domain.MemorySource;

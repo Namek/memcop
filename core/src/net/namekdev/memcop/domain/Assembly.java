@@ -117,6 +117,8 @@ public abstract class Assembly {
     public static class Instruction {
         public OpDefinition opdef;
         public InstrArg[] args;
+        public String lineText;
+        public int lineNumber;
 
         @Override
         public String toString() {
@@ -165,6 +167,8 @@ public abstract class Assembly {
 
     public static List<Instruction> compile(String code, Level level) throws AssemblyCompilationError {
         final TreeMap<String, Label> labels = new TreeMap<String, Label>();
+
+        // 0. TODO scan for comments, remove them
 
         // 1. scan for labels
         StringTokenizer t = new StringTokenizer(code, "\r\n");
@@ -277,6 +281,9 @@ public abstract class Assembly {
                     throw new AssemblyCompilationError(msg, line);
                 }
             }
+
+            instr.lineText = lineStr;
+            instr.lineNumber = line;
 
             instructions.add(instr);
         }

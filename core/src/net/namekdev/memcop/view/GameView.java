@@ -25,7 +25,8 @@ import net.namekdev.memcop.view.widgets.LmlSourceHighlighter;
 public class GameView extends AbstractLmlView {
     @LmlActor("random") private Label result;
 
-    @LmlActor("codeInput") private HighlightTextArea codeInput;
+    private final HighlightTextArea codeInput = new HighlightTextArea("");
+    private String code = "";
 
 
     public Level level = Level.create(4);
@@ -44,19 +45,19 @@ public class GameView extends AbstractLmlView {
 
     @Override
     public void show() {
-        String code = "" +
-                "mov 5 $a\n" +
-                "mov 0 $b\n" +
-                "_start:\n" +
-                "ldi $c\n" +
-                "sti $c $b\n" +
-                "inc $b\n" +
-                "cmp $b $a\n" +
-                "jge _start\n" +
-                "sub $b 2 $b\n" + //expecting b = 4
-                "\n" +
-                "_end:\n" +
-                "mov $b $c";
+        code = "" +
+            "mov 5 $a\n" +
+            "mov 0 $b\n" +
+            "_start:\n" +
+            "ldi $c\n" +
+            "sti $c $b\n" +
+            "inc $b\n" +
+            "cmp $b $a\n" +
+            "jge _start\n" +
+            "sub $b 2 $b\n" + //expecting b = 4
+            "\n" +
+            "_end:\n" +
+            "mov $b $c";
 
         try {
             transputer.instructions = Assembly.compile(code, level);
@@ -100,28 +101,34 @@ public class GameView extends AbstractLmlView {
         return "first";
     }
 
-    @LmlAction("codeHighlighter")
-    public BaseHighlighter getCodeSourceHighlighter() {
-        return new LmlSourceHighlighter();
+    @LmlAction("codeInput")
+    public HighlightTextArea createCodeInput() {
+        codeInput.setHighlighter(new LmlSourceHighlighter());
+        codeInput.setMessageText("If you need help... hit F1");
+        codeInput.setFocusBorderEnabled(false);
+        codeInput.getColor().a = 0.6f;
+        return codeInput;
     }
 
-    @LmlAction("roll")
-    public void rollNumber() {
-        result.setText(String.valueOf((int) (MathUtils.random() * 1000)));
+    @LmlAction("codeCursor")
+    public Actor createCodeCursor() {
+        return new CodeCursor(codeInput, transputer);
     }
+
+    @LmlAction("inputMemActor")
+    public Actor createInputMemActor() {
+        return new MemorySourceRenderer(level.inputMem);
+    }
+
+    @LmlAction("outputMemActor")
+    public Actor createOutputMemActor() {
+        return new MemorySourceRenderer(level.outputMem);
+    }
+
 
     @LmlAction("compileCode")
     public void compileCode() {
         // TODO button
     }
 
-    @LmlAction("getInputMemActor")
-    public Actor getInputMemActor() {
-        return new MemorySourceRenderer(level.inputMem);
-    }
-
-    @LmlAction("getOutputMemActor")
-    public Actor getOutputMemActor() {
-        return new MemorySourceRenderer(level.outputMem);
-    }
 }
