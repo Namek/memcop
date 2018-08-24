@@ -3,7 +3,7 @@
 
 <table fillparent="true" defaultpad="10" tablepad="12">
     <table onecolumn="true" filly="true" tablealign="top">
-        <label>Memory: source</label>
+        <label>$levelName</label>
         <separator growx="true" padtop="3" padbottom="6" />
         <label>$goalDescription</label>
         <textbutton text="Show Goal" id="btnShowGoal" />
@@ -26,8 +26,8 @@
         <separator growx="true" padtop="3" padbottom="6" height="0" />
 
 
-        <textbutton id="btnRun" onclick="run">Run</textbutton>
         <textbutton id="btnDebug" onclick="debug">Debug</textbutton>
+        <textbutton id="btnRun" onclick="run">Run</textbutton>
         <textbutton id="btnStop" onclick="stop">Stop</textbutton>
     </table>
 

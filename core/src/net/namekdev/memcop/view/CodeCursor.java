@@ -26,14 +26,24 @@ public class CodeCursor extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
 
-        final Assembly.Instruction instr = transputer.lastInstruction;
-        if (instr == null)
+        final Assembly.Instruction instr = transputer.getNextInstruction();
+        if (!transputer.isDebuggingActive())
             return;
 
         float lineHeight = codeInput.getStyle().font.getLineHeight();
-        float y = codeInput.getHeight() - instr.lineNumber * lineHeight + 4;
+        float y, h;
+
+        if (instr != null) {
+            y = codeInput.getHeight() - instr.lineNumber * lineHeight + 4;
+            h = lineHeight - 2;
+        }
+        else {
+            // render bottom line when whole program is finished
+            y = codeInput.getHeight() - transputer.lastInstruction.lineNumber * lineHeight + 4;
+            h = 4;
+        }
 
         batch.setColor(COLOR_CURSOR);
-        batch.draw(Assets.white, 0, y, codeInput.getWidth(), lineHeight - 2);
+        batch.draw(Assets.white, 0, y, codeInput.getWidth(), h);
     }
 }

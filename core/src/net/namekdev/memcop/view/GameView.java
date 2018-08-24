@@ -83,6 +83,14 @@ public class GameView extends AbstractLmlView {
                 return super.mouseMoved(event, x, y);
             }
         });
+
+        codeInput.addListener(new InputListener() {
+            @Override
+            public boolean keyTyped(InputEvent event, char character) {
+                onCodeEdited();
+                return super.keyTyped(event, character);
+            }
+        });
     }
 
 
@@ -105,6 +113,7 @@ public class GameView extends AbstractLmlView {
         codeInput.setText(code);
 
         compileCode();
+        updateAllUi();
     }
 
     @Override
@@ -141,9 +150,14 @@ public class GameView extends AbstractLmlView {
     public Actor createRegisterValueLabel(String name) {
         Skin skin = parser.getData().getDefaultSkin();
         Label label = new Label("0", skin);
-        registerValueLabels.put("$" + name.replace("reg_", ""), label);
+        registerValueLabels.put("$" + name, label);
 
         return label;
+    }
+
+    @LmlAction("levelName")
+    public String getLevelName() {
+        return level.name;
     }
 
     @LmlAction("goalDescription")
@@ -176,6 +190,7 @@ public class GameView extends AbstractLmlView {
         while (transputer.step()) {
             updateRegisters();
         }
+        updateAllUi();
     }
 
     /**
@@ -183,16 +198,26 @@ public class GameView extends AbstractLmlView {
      */
     @LmlAction("debug")
     public void debug() {
-        transputer.step();
-        updateRegisters();
+        if (!transputer.isDebuggingActive()) {
+            transputer.startDebugging();
+        }
+        else {
+            transputer.step();
+        }
+        updateAllUi();
     }
 
     @LmlAction("stop")
     public void reset() {
         transputer.reset();
         level.reset();
-        updateButtonTexts();
-        updateRegisters();
+        updateAllUi();
+    }
+
+    private void onCodeEdited() {
+        assert(!transputer.isDebuggingActive());
+
+        // TODO
     }
 
     private void compileCode() {
@@ -205,10 +230,21 @@ public class GameView extends AbstractLmlView {
         }
     }
 
+    private void updateAllUi() {
+        updateButtonTexts();
+        updateRegisters();
+        codeInput.setDisabled(transputer.isDebuggingActive());
+    }
 
     private void updateButtonTexts() {
-        btnRun.setText(transputer.lastInstruction == null ? "Run" : "Continue");
-        btnDebug.setText(transputer.lastInstruction == null ? "Debug" : "Step");
+        final boolean isDebuggingActive = transputer.isDebuggingActive();
+        final boolean noMoreInstructions = isDebuggingActive && transputer.getNextInstruction() == null;
+
+        btnRun.setText(isDebuggingActive ? "Continue" : "Run" );
+        btnRun.setDisabled(noMoreInstructions);
+        btnDebug.setText(isDebuggingActive ? "Step" : "Debug");
+        btnDebug.setDisabled(noMoreInstructions);
+        btnStop.setVisible(isDebuggingActive);
     }
 
     private void updateRegisters() {

@@ -13,6 +13,7 @@ public class Transputer {
     public static final int LESSER_THAN = -1;
     public static final int GREATER_THAN = 1;
 
+
     public class RegisterState {
         public Assembly.Register info;
         public int value;
@@ -38,7 +39,7 @@ public class Transputer {
     /**
      * Defines a position before given instruction is executed.
      */
-    public int instrCursor = 0;
+    public int nextInstrIndex = -1;
     public List<Instruction> instructions;
     public Instruction lastInstruction = null;
     public Stack<Integer> stack = new Stack<Integer>();
@@ -228,49 +229,49 @@ public class Transputer {
             @Override
             public int execute(Instruction instr) {
                 int relativeOffset = getValue(instr.args[0]);
-                return instrCursor + relativeOffset;
+                return nextInstrIndex + relativeOffset;
             }
         });
         put("je", new InstrExecutor() {
             @Override
             public int execute(Instruction instr) {
                 int relativeOffset = getValue(instr.args[0]);
-                return lastComparison == EQUAL ? instrCursor + relativeOffset : -1;
+                return lastComparison == EQUAL ? nextInstrIndex + relativeOffset : -1;
             }
         });
         put("jne", new InstrExecutor() {
             @Override
             public int execute(Instruction instr) {
                 int relativeOffset = getValue(instr.args[0]);
-                return lastComparison != EQUAL ? instrCursor + relativeOffset : -1;
+                return lastComparison != EQUAL ? nextInstrIndex + relativeOffset : -1;
             }
         });
         put("jg", new InstrExecutor() {
             @Override
             public int execute(Instruction instr) {
                 int relativeOffset = getValue(instr.args[0]);
-                return lastComparison == GREATER_THAN ? instrCursor + relativeOffset : -1;
+                return lastComparison == GREATER_THAN ? nextInstrIndex + relativeOffset : -1;
             }
         });
         put("jl", new InstrExecutor() {
             @Override
             public int execute(Instruction instr) {
                 int relativeOffset = getValue(instr.args[0]);
-                return lastComparison == LESSER_THAN ? instrCursor + relativeOffset : -1;
+                return lastComparison == LESSER_THAN ? nextInstrIndex + relativeOffset : -1;
             }
         });
         put("jge", new InstrExecutor() {
             @Override
             public int execute(Instruction instr) {
                 int relativeOffset = getValue(instr.args[0]);
-                return lastComparison != LESSER_THAN ? instrCursor + relativeOffset : -1;
+                return lastComparison != LESSER_THAN ? nextInstrIndex + relativeOffset : -1;
             }
         });
         put("jle", new InstrExecutor() {
             @Override
             public int execute(Instruction instr) {
                 int relativeOffset = getValue(instr.args[0]);
-                return lastComparison != GREATER_THAN ? instrCursor + relativeOffset : -1;
+                return lastComparison != GREATER_THAN ? nextInstrIndex + relativeOffset : -1;
             }
         });
     }};
@@ -306,29 +307,49 @@ public class Transputer {
         }
     }
 
+    public boolean isDebuggingActive() {
+        return nextInstrIndex >= 0;
+    }
+
+    public Instruction getNextInstruction() {
+        if (nextInstrIndex < 0 || nextInstrIndex >= instructions.size())
+            return null;
+
+        return instructions.get(nextInstrIndex);
+    }
+
+    public void startDebugging() {
+        reset();
+        nextInstrIndex = 0;
+    }
 
     /**
      * Execute a single instruction.
      */
     public boolean step() {
-        if (instrCursor >= instructions.size() || instrCursor < 0)
+        if (nextInstrIndex < 0)
             return false;
 
-        Instruction instr = instructions.get(instrCursor);
+        if (nextInstrIndex >= instructions.size()) {
+            nextInstrIndex = instructions.size() + 1;
+            return false;
+        }
+
+        Instruction instr = instructions.get(nextInstrIndex);
         InstrExecutor instrExec = instructionExecutors[instr.opdef.id];
         int newInstrCursor = instrExec.execute(instr);
 
         if (newInstrCursor >= 0)
-            instrCursor = newInstrCursor;
+            nextInstrIndex = newInstrCursor;
         else
-            instrCursor += 1;
+            nextInstrIndex += 1;
 
         lastInstruction = instr;
         return true;
     }
 
     public void reset() {
-        instrCursor = 0;
+        nextInstrIndex = -1;
         for (RegisterState reg : registerStates) {
             reg.value = 0;
         }
