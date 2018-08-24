@@ -11,6 +11,7 @@ public class DesktopLauncher {
 		float scale = pixelPerInch / 96f;
 		config.width = (int) (scale * MemcopGame.WIDTH);
 		config.height = (int) (scale * MemcopGame.HEIGHT);
+
 		new LwjglApplication(new MemcopGame(), config);
 	}
 }

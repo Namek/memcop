@@ -8,9 +8,13 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.I18NBundle;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.github.czyzby.kiwi.util.gdx.asset.Disposables;
+import com.github.czyzby.lml.parser.LmlData;
 import com.github.czyzby.lml.parser.LmlParser;
+import com.github.czyzby.lml.parser.impl.DefaultLmlData;
 import com.github.czyzby.lml.util.LmlApplicationListener;
 import com.github.czyzby.lml.vis.util.VisLml;
 import com.kotcrab.vis.ui.VisUI;
@@ -18,22 +22,22 @@ import net.namekdev.memcop.view.GameView;
 
 public class MemcopGame extends LmlApplicationListener {
     public static final int WIDTH = 900, HEIGHT = 600;
+
     private Batch batch;
 
 
     @Override
     public void create() {
+        Assets.load();
         super.create();
+
         batch = new SpriteBatch();
         batch.enableBlending();
 
         Stage stage = newStage(batch);
-        Assets.load();
-
         GameView view = new GameView(stage);
         initiateView(view);
         setView(view);
-
 
 
         //saveDtdSchema(Gdx.files.local("lml.dtd"));
@@ -44,7 +48,7 @@ public class MemcopGame extends LmlApplicationListener {
      * @param batch
      */
     public static Stage newStage(Batch batch) {
-        Stage stage = new Stage(new FitViewport(MemcopGame.WIDTH, MemcopGame.HEIGHT), batch);
+        Stage stage = new Stage(new ScalingViewport(Scaling.fit, MemcopGame.WIDTH, MemcopGame.HEIGHT), batch);
 
         stage.addListener(new InputListener() {
             @Override
@@ -69,8 +73,10 @@ public class MemcopGame extends LmlApplicationListener {
 
     @Override
     protected LmlParser createParser() {
-        return VisLml.parser()
-                .i18nBundle(I18NBundle.createBundle(Gdx.files.internal("i18n/bundle")))
-                .build();
+        LmlData data = new DefaultLmlData();
+        data.setDefaultSkin(Assets.skin);
+        data.setDefaultI18nBundle(I18NBundle.createBundle(Gdx.files.internal("i18n/bundle")));
+
+        return VisLml.parser(data).build();
     }
 }
