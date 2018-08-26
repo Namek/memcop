@@ -2,39 +2,11 @@
 <!DOCTYPE window SYSTEM "../../lml.dtd">
 
 <table fillparent="true" defaultpad="{=10 * $scale}" tablepad="{=12 * $scale}">
-    <table onecolumn="true" filly="true" tablealign="top">
-        <label>$levelName</label>
+    <label style="header" row="true" colspan="3">$levelName</label>
 
-        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
-        <label>$goalDescription</label>
-
-        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
-        <textbutton text="Show Goal" id="btnShowGoal" />
-
-        <container height="{=40 * $scale}" />
-        <label>Debug</label>
-        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
-
-        <table>
-            <label>reg</label>
-            <label padleft="{=4 * $scale}" row="true">val</label>
-            <:each element="$registers">
-                <label>{element}</label>
-                <container padleft="{=4 * $scale}" align="left" row="true">
-                    <:actor method="createRegisterValueLabel">{element}</:actor>
-                </container>
-            </:each>
-        </table>
-
-        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" height="0" />
-
-
-        <textbutton id="btnDebug" onclick="debug">Debug</textbutton>
-        <textbutton id="btnRun" onclick="run">Run</textbutton>
-        <textbutton id="btnStop" onclick="stop">Stop</textbutton>
-    </table>
 
     <table onecolumn="true" filly="true" tablealign="top">
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=2 * $scale}" />
         <label>Assembly</label>
         <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
         <scrollpane filly="true" >
@@ -48,11 +20,46 @@
     </table>
 
     <table onecolumn="true" filly="true" tablealign="top">
-        <label>Memory: source</label>
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=2 * $scale}" />
+        <label>Debug</label>
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
+
+        <table>
+            <label style="code-like">REG</label>
+            <label style="code-like" padleft="{=4 * $scale}" row="true">VAL</label>
+            <:each element="$registers">
+                <label style="code-like">{element}</label>
+                <container padleft="{=4 * $scale}" align="left" row="true">
+                    <:actor method="createRegisterValueLabel">{element}</:actor>
+                </container>
+            </:each>
+        </table>
+
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" height="0" />
+
+        <textbutton id="btnDebug" onclick="debug">Debug</textbutton>
+        <textbutton id="btnRun" onclick="run">Run</textbutton>
+        <textbutton id="btnStop" onclick="stop">Stop</textbutton>
+
+
+        <container height="{=40 * $scale}" />
+
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=2 * $scale}" />
+        <label style="header">Goal</label>
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
+        <label style="small">$goalDescription</label>
+
+        <textbutton id="btnShowGoal" text="Show" padtop="{=6 * $scale}" />
+    </table>
+
+    <table onecolumn="true" filly="true" tablealign="top">
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=2 * $scale}" />
+        <label>from Cartridge #529</label>
         <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
         <:actor method="inputMemActor" />
 
-        <label>Memory: destination</label>
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=2 * $scale}" />
+        <label>to disk</label>
         <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
         <:actor method="outputMemActor" />
     </table>

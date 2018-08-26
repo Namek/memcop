@@ -26,16 +26,27 @@ object Assets {
     fun load() {
         white = genColorTex(Color.WHITE)
 
-        val fontGen = FreeTypeFontGenerator(Gdx.files.internal("fonts/IBMPlexMono-Regular.ttf"))
+        val textFontGen = FreeTypeFontGenerator(Gdx.files.internal("fonts/Cinzel-Regular.ttf"))
+        val codeFontGen = FreeTypeFontGenerator(Gdx.files.internal("fonts/IBMPlexMono-Regular.ttf"))
         val fontParams = FreeTypeFontGenerator.FreeTypeFontParameter()
-        fontParams.size = (16 * Render.scale).roundToInt()
-        val defaultFont = fontGen.generateFont(fontParams)
+        fontParams.size = (18 * Render.scale).roundToInt()
+        val headerFont = textFontGen.generateFont(fontParams)
+        fontParams.size = (14 * Render.scale).roundToInt()
+        val defaultFont = textFontGen.generateFont(fontParams)
         fontParams.size = (12 * Render.scale).roundToInt()
-        val smallFont = fontGen.generateFont(fontParams)
+        val smallFont = textFontGen.generateFont(fontParams)
+        fontParams.size = (16 * Render.scale).roundToInt()
+        val codeFont = codeFontGen.generateFont(fontParams)
+
+        textFontGen.dispose()
+        codeFontGen.dispose()
+
         val skinPath = "skin/uiskin.json"
         val skinResources = ObjectMap<String, Any>()
-        skinResources.put("default-font", defaultFont);
-        skinResources.put("small-font", smallFont);
+        skinResources.put("header-font", headerFont)
+        skinResources.put("default-font", defaultFont)
+        skinResources.put("small-font", smallFont)
+        skinResources.put("code-font", codeFont)
         val skinParam = SkinLoader.SkinParameter(skinResources)
         assetManager.load(skinPath, Skin::class.java, skinParam)
         assetManager.finishLoading()

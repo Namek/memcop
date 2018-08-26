@@ -31,7 +31,7 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
     @LmlActor("btnShowGoal") lateinit var btnShowGoal: TextButton
 
     @get:LmlAction("scale") val scale = Render.scale
-    @get:LmlAction("codeInput") val codeInput = HighlightTextArea("")
+    @get:LmlAction("codeInput") val codeInput = HighlightTextArea("", "codeTextArea")
 
 
     internal var level = LevelFactory.create(4)
@@ -152,7 +152,7 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
     @LmlAction("createRegisterValueLabel")
     fun createRegisterValueLabel(name: String): Actor {
         val skin = parser!!.data.defaultSkin
-        val label = Label("0", skin)
+        val label = Label("0", skin, "code-like")
         registerValueLabels["$$name"] = label
 
         return label
