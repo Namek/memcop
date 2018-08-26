@@ -22,18 +22,19 @@ class CodeCursor(private val codeInput: HighlightTextArea, private val transpute
         if (!transputer.isDebuggingActive)
             return
 
+        val s = Render.scale
         val lineHeight = codeInput.style.font.lineHeight
         val y: Float
         val h: Float
 
         if (instr != null) {
-            y = codeInput.height - instr.lineNumber * lineHeight + 4
-            h = lineHeight - 2
+            y = codeInput.height - instr.lineNumber * lineHeight + 4 * s
+            h = lineHeight - 2 * s
         }
         else {
             // render bottom line when whole program is finished
-            y = codeInput.height - transputer.lastInstruction!!.lineNumber * lineHeight + 4
-            h = 4f
+            y = codeInput.height - transputer.lastInstruction!!.lineNumber * lineHeight + 4 * s
+            h = 4f * s
         }
 
         batch.color = COLOR_CURSOR

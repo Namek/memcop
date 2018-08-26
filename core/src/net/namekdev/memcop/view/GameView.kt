@@ -22,7 +22,7 @@ import net.namekdev.memcop.view.widgets.LmlSourceHighlighter
 import java.util.ArrayList
 import java.util.TreeMap
 
-class GameView(private val _stage: Stage) : AbstractLmlView(_stage) {
+class GameView(_stage: Stage) : AbstractLmlView(_stage) {
     private var parser: LmlParser? = null
 
     @LmlActor("btnRun") lateinit var btnRun: TextButton
@@ -30,6 +30,7 @@ class GameView(private val _stage: Stage) : AbstractLmlView(_stage) {
     @LmlActor("btnStop") lateinit var btnStop: TextButton
     @LmlActor("btnShowGoal") lateinit var btnShowGoal: TextButton
 
+    @get:LmlAction("scale") val scale = Render.scale
     @get:LmlAction("codeInput") val codeInput = HighlightTextArea("")
 
 
@@ -51,7 +52,7 @@ class GameView(private val _stage: Stage) : AbstractLmlView(_stage) {
             val names = ArrayList<String>()
 
             for (reg in transputer.registerStates) {
-                names.add(reg.info!!.name.replace("$", ""))
+                names.add(reg.info.name.replace("$", ""))
             }
             return names
         }
@@ -131,6 +132,7 @@ class GameView(private val _stage: Stage) : AbstractLmlView(_stage) {
     override fun getViewId(): String {
         return "first"
     }
+
 
     @LmlAction("codeCursor")
     fun createCodeCursor(): Actor {
@@ -230,7 +232,7 @@ class GameView(private val _stage: Stage) : AbstractLmlView(_stage) {
 
     private fun updateRegisters() {
         for (reg in transputer.registerStates) {
-            val valueLabel = registerValueLabels[reg.info!!.name]!!
+            val valueLabel = registerValueLabels[reg.info.name]!!
             valueLabel.setText(reg.value.toString())
         }
     }

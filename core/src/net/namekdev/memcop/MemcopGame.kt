@@ -19,9 +19,9 @@ import com.github.czyzby.lml.util.LmlApplicationListener
 import com.github.czyzby.lml.vis.util.VisLml
 import com.kotcrab.vis.ui.VisUI
 import net.namekdev.memcop.view.GameView
+import net.namekdev.memcop.view.Render
 
 class MemcopGame : LmlApplicationListener() {
-
     private lateinit var batch: Batch
 
 
@@ -45,7 +45,6 @@ class MemcopGame : LmlApplicationListener() {
     override fun dispose() {
         super.dispose()
         Disposables.disposeOf(batch)
-        VisUI.dispose()
         Assets.disposeAll()
     }
 
@@ -58,15 +57,12 @@ class MemcopGame : LmlApplicationListener() {
     }
 
     companion object {
-        val WIDTH = 900
-        val HEIGHT = 600
-
         /**
          * @return a new customized [Stage] instance.
          * @param batch
          */
         fun newStage(batch: Batch): Stage {
-            val stage = Stage(ScalingViewport(Scaling.fit, MemcopGame.WIDTH.toFloat(), MemcopGame.HEIGHT.toFloat()), batch)
+            val stage = Stage(FitViewport(Render.width, Render.height), batch)
 
             stage.addListener(object : InputListener() {
                 override fun keyDown(event: InputEvent?, keycode: Int): Boolean {

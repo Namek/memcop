@@ -1,15 +1,20 @@
 package net.namekdev.memcop
 
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.assets.AssetManager
+import com.badlogic.gdx.assets.loaders.SkinLoader
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.Disposable
+import com.badlogic.gdx.utils.ObjectMap
 import com.kotcrab.vis.ui.VisUI
-
-import java.util.ArrayList
+import net.namekdev.memcop.view.Render
+import java.util.*
+import kotlin.math.roundToInt
 
 object Assets {
     var assetManager = AssetManager()
@@ -21,12 +26,20 @@ object Assets {
     fun load() {
         white = genColorTex(Color.WHITE)
 
-        val skinPath = "skin/x2/uiskin.json"
-        assetManager.load(skinPath, Skin::class.java)
-
+        val fontGen = FreeTypeFontGenerator(Gdx.files.internal("fonts/IBMPlexMono-Regular.ttf"))
+        val fontParams = FreeTypeFontGenerator.FreeTypeFontParameter()
+        fontParams.size = (16 * Render.scale).roundToInt()
+        val defaultFont = fontGen.generateFont(fontParams)
+        fontParams.size = (12 * Render.scale).roundToInt()
+        val smallFont = fontGen.generateFont(fontParams)
+        val skinPath = "skin/uiskin.json"
+        val skinResources = ObjectMap<String, Any>()
+        skinResources.put("default-font", defaultFont);
+        skinResources.put("small-font", smallFont);
+        val skinParam = SkinLoader.SkinParameter(skinResources)
+        assetManager.load(skinPath, Skin::class.java, skinParam)
         assetManager.finishLoading()
         skin = assetManager.get(skinPath)
-
         VisUI.load(skin)
     }
 
@@ -43,6 +56,7 @@ object Assets {
         for (d in disposables)
             d.dispose()
         assetManager.dispose()
+        VisUI.dispose(false)
     }
 
 }

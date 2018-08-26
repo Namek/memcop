@@ -1,29 +1,32 @@
 <?xml version="1.0"?>
 <!DOCTYPE window SYSTEM "../../lml.dtd">
 
-<table fillparent="true" defaultpad="10" tablepad="12">
+<table fillparent="true" defaultpad="{=10 * $scale}" tablepad="{=12 * $scale}">
     <table onecolumn="true" filly="true" tablealign="top">
         <label>$levelName</label>
-        <separator growx="true" padtop="3" padbottom="6" />
+
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
         <label>$goalDescription</label>
+
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
         <textbutton text="Show Goal" id="btnShowGoal" />
 
-        <container height="40" />
+        <container height="{=40 * $scale}" />
         <label>Debug</label>
-        <separator growx="true" padtop="3" padbottom="6" />
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
 
         <table>
             <label>reg</label>
-            <label padleft="4" row="true">val</label>
+            <label padleft="{=4 * $scale}" row="true">val</label>
             <:each element="$registers">
                 <label>{element}</label>
-                <container padleft="4" align="left" row="true">
+                <container padleft="{=4 * $scale}" align="left" row="true">
                     <:actor method="createRegisterValueLabel">{element}</:actor>
                 </container>
             </:each>
         </table>
 
-        <separator growx="true" padtop="3" padbottom="6" height="0" />
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" height="0" />
 
 
         <textbutton id="btnDebug" onclick="debug">Debug</textbutton>
@@ -33,9 +36,9 @@
 
     <table onecolumn="true" filly="true" tablealign="top">
         <label>Assembly</label>
-        <separator growx="true" padtop="3" padbottom="6" />
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
         <scrollpane filly="true" >
-            <container fillparent="true" width="180">
+            <container fillparent="true" width="{=180 * $scale}">
                 <stack>
                     <:actor method="codeCursor" />
                     <:actor method="codeInput" />
@@ -46,11 +49,11 @@
 
     <table onecolumn="true" filly="true" tablealign="top">
         <label>Memory: source</label>
-        <separator growx="true" padtop="3" padbottom="6" />
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
         <:actor method="inputMemActor" />
 
         <label>Memory: destination</label>
-        <separator growx="true" padtop="3" padbottom="6" />
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
         <:actor method="outputMemActor" />
     </table>
 

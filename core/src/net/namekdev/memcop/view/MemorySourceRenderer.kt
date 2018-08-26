@@ -8,8 +8,8 @@ import net.namekdev.memcop.domain.MemorySource
 
 class MemorySourceRenderer(var memSource: MemorySource) : Actor() {
     init {
-        width = (memSource.sectorsPerRow * (CELL_SIZE + PADDING) + PADDING).toFloat()
-        height = (memSource.totalHeight * (CELL_SIZE + PADDING) + PADDING).toFloat()
+        width = (memSource.sectorsPerRow * (CELL_SIZE + PADDING) - PADDING)
+        height = (memSource.totalHeight * (CELL_SIZE + PADDING) - PADDING)
     }
 
     override fun draw(batch: Batch, parentAlpha: Float) {
@@ -52,18 +52,18 @@ class MemorySourceRenderer(var memSource: MemorySource) : Actor() {
                 }
 
                 batch.color = cellBg
-                batch.draw(Assets.white, x, y, CELL_SIZE.toFloat(), CELL_SIZE.toFloat())
+                batch.draw(Assets.white, x, y, CELL_SIZE, CELL_SIZE)
 
                 if (renderCursor) {
                     batch.color = cursorColor
-                    batch.draw(Assets.white, x, y, CELL_SIZE.toFloat(), (CELL_SIZE / 5).toFloat())
+                    batch.draw(Assets.white, x, y, CELL_SIZE, (CELL_SIZE / 5))
                 }
 
-                x += (CELL_SIZE + PADDING).toFloat()
+                x += (CELL_SIZE + PADDING)
                 ++ix
                 ++i
             }
-            y -= (CELL_SIZE + PADDING).toFloat()
+            y -= (CELL_SIZE + PADDING)
             ++iy
         }
 
@@ -72,8 +72,8 @@ class MemorySourceRenderer(var memSource: MemorySource) : Actor() {
 
 
     companion object {
-        val PADDING = 2
-        val CELL_SIZE = 22
+        val PADDING = 2 * Render.scale
+        val CELL_SIZE = 22 * Render.scale
         internal val COLOR_WRITTEN = Color(0.137f, 0.607f, 0.262f, 1f)
         internal val COLOR_UNTOUCHED = Color.DARK_GRAY
         internal val COLOR_BROKEN = Color.valueOf("9b311d")
