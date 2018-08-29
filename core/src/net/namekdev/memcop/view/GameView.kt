@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.InputListener
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.github.czyzby.lml.annotation.*
 import com.github.czyzby.lml.parser.LmlParser
@@ -32,6 +33,8 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
 
     @get:LmlAction("scale") val scale = Render.scale
     @get:LmlAction("codeInput") val codeInput = HighlightTextArea("", "codeTextArea")
+
+    lateinit var skin: Skin
 
 
     internal var level = LevelFactory.create(4)
@@ -73,6 +76,7 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
     @LmlBefore
     fun beforeParse(parser: LmlParser) {
         this.parser = parser
+        this.skin = parser.data.defaultSkin
     }
 
     @LmlAfter
@@ -151,7 +155,6 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
 
     @LmlAction("createRegisterValueLabel")
     fun createRegisterValueLabel(name: String): Actor {
-        val skin = parser!!.data.defaultSkin
         val label = Label("0", skin, "code-like")
         registerValueLabels["$$name"] = label
 
@@ -223,11 +226,12 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
         val isDebuggingActive = transputer.isDebuggingActive
         val noMoreInstructions = isDebuggingActive && transputer.nextInstruction == null
 
-        btnRun.setText(if (isDebuggingActive) "Continue" else "Run")
+        btnRun.setText(if (isDebuggingActive) "\ue801" else "\ue800")
         btnRun.isDisabled = noMoreInstructions
-        btnDebug.setText(if (isDebuggingActive) "Step" else "Debug")
+        btnDebug.setText(if (isDebuggingActive) "\ue806" else "\uf188")
         btnDebug.isDisabled = noMoreInstructions
-        btnStop.isVisible = isDebuggingActive
+        btnStop.setText("\ue802")
+        btnStop.isDisabled = !isDebuggingActive
     }
 
     private fun updateRegisters() {

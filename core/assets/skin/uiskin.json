@@ -106,7 +106,8 @@ com.kotcrab.vis.ui.widget.VisTextButton$VisTextButtonStyle: {
 	default: {focusBorder: border, down: button-down, up: button, over: button-over, disabled: button, font: default-font, fontColor: white, disabledFontColor: grey },
 	toggle: {focusBorder: border, checked: button-down, down: button-down, up: button, font: default-font, fontColor: white, over: button-over, disabled: button, disabledFontColor: grey },
 	blue: {focusBorder: border-dark-blue, down: button-blue-down, up: button-blue, over: button-blue-over, disabled: button, font: default-font, fontColor: white, disabledFontColor: grey },
-	menu-bar: {over: button-down, font: default-font, fontColor: white, down: button-down, up: button, disabled: button, disabledFontColor: grey }
+	menu-bar: {over: button-down, font: default-font, fontColor: white, down: button-down, up: button, disabled: button, disabledFontColor: grey },
+	debug-icons: {focusBorder: border, down: button-down, up: button, over: button-over, disabled: button, font: debug-icons-font, fontColor: white, disabledFontColor: grey }
 },
 com.kotcrab.vis.ui.widget.VisImageButton$VisImageButtonStyle: {
 	default: {down: button-down, up: button, over: button-over, disabled: button, focusBorder: border },

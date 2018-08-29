@@ -16,6 +16,7 @@ import net.namekdev.memcop.view.Render
 import java.util.*
 import kotlin.math.roundToInt
 
+
 object Assets {
     var assetManager = AssetManager()
     lateinit var white: TextureRegion
@@ -28,6 +29,7 @@ object Assets {
 
         val textFontGen = FreeTypeFontGenerator(Gdx.files.internal("fonts/Cinzel-Regular.ttf"))
         val codeFontGen = FreeTypeFontGenerator(Gdx.files.internal("fonts/IBMPlexMono-Regular.ttf"))
+        val iconDebugFontGen = FreeTypeFontGenerator(Gdx.files.internal("fonts/debug.ttf"))
         val fontParams = FreeTypeFontGenerator.FreeTypeFontParameter()
         fontParams.size = (18 * Render.scale).roundToInt()
         val headerFont = textFontGen.generateFont(fontParams)
@@ -38,8 +40,18 @@ object Assets {
         fontParams.size = (16 * Render.scale).roundToInt()
         val codeFont = codeFontGen.generateFont(fontParams)
 
+        // debug icons as font
+        fontParams.size = (20 * Render.scale).roundToInt()
+        fontParams.characters = "\ue800\ue801\ue802\ue803\ue805\ue806\uf188"
+        fontParams.color = Color.WHITE
+        val fontData = FreeTypeFontGenerator.FreeTypeBitmapFontData()
+        fontData.xChars = fontParams.characters.toCharArray()
+        fontData.capChars = fontParams.characters.toCharArray()
+        val iconDebugFont = iconDebugFontGen.generateFont(fontParams, fontData)
+
         textFontGen.dispose()
         codeFontGen.dispose()
+        iconDebugFontGen.dispose()
 
         val skinPath = "skin/uiskin.json"
         val skinResources = ObjectMap<String, Any>()
@@ -47,6 +59,7 @@ object Assets {
         skinResources.put("default-font", defaultFont)
         skinResources.put("small-font", smallFont)
         skinResources.put("code-font", codeFont)
+        skinResources.put("debug-icons-font", iconDebugFont);
         val skinParam = SkinLoader.SkinParameter(skinResources)
         assetManager.load(skinPath, Skin::class.java, skinParam)
         assetManager.finishLoading()
@@ -71,3 +84,4 @@ object Assets {
     }
 
 }
+

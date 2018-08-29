@@ -34,18 +34,23 @@
                 </container>
             </:each>
         </table>
+        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
 
-        <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" height="0" />
+        <container height="{=10 * $scale}" />
 
-        <textbutton id="btnDebug" onclick="debug">Debug</textbutton>
-        <textbutton id="btnRun" onclick="run">Run</textbutton>
-        <textbutton id="btnStop" onclick="stop">Stop</textbutton>
+        <table>
+            <:assign key="debugBtnSize" value="{=30 * $scale}" />
+            <:assign key="debugBtnGap" value="{=3 * $scale}" />
 
+            <textbutton id="btnDebug" onclick="debug" style="debug-icons" width="{debugBtnSize}" height="{debugBtnSize}" textalign="top" padright="{debugBtnGap}">Debug</textbutton>
+            <textbutton id="btnRun" onclick="run" style="debug-icons" width="{debugBtnSize}" height="{debugBtnSize}" textalign="top" padright="{debugBtnGap}">Run</textbutton>
+            <textbutton id="btnStop" onclick="stop" style="debug-icons" width="{debugBtnSize}" height="{debugBtnSize}" textalign="top">Stop</textbutton>
+        </table>
 
         <container height="{=40 * $scale}" />
 
         <separator growx="true" padtop="{=3 * $scale}" padbottom="{=2 * $scale}" />
-        <label style="header">Goal</label>
+        <label>Goal</label>
         <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
         <label style="small">$goalDescription</label>
 
