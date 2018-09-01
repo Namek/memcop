@@ -7,7 +7,9 @@ class Level(
     indexStartInput: Int,
     indexStartOutput: Int,
     var copyLength: Int,
-    copyTimes: Int
+    copyTimes: Int,
+    val inputMemTitle: String = "from Cartridge #529",
+    val outputMemTitle: String = "to disk"
 ) {
     var copyTimes = 1
     var indexStartInput = 0
@@ -33,7 +35,8 @@ class Level(
         this.validator = SequentialCopyValidator(indexStartInput, indexStartOutput, copyLength, copyTimes)
     }
 
-    constructor(name: String, inputMem: MemorySource, outputMem: MemorySource, copyTimes: Int) : this(name, inputMem, outputMem, 0, 0, inputMem.validSectorsCount, copyTimes) {}
+    constructor(name: String, inputMem: MemorySource, outputMem: MemorySource, copyTimes: Int)
+        : this(name, inputMem, outputMem, 0, 0, inputMem.validSectorsCount, copyTimes) {}
 
     fun reset() {
         inputMem.reset()

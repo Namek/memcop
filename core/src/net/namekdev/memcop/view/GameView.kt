@@ -52,6 +52,14 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
         @LmlAction("goalDescription")
         get() = level.goalDescription
 
+    val inputMemTitle: String
+        @LmlAction("inputMemTitle")
+        get() = level.inputMemTitle
+
+    val outputMemTitle: String
+        @LmlAction("outputMemTitle")
+        get() = level.outputMemTitle
+
     val registerList: List<String>
         @LmlAction("registers")
         get() {
@@ -130,7 +138,7 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
     }
 
     override fun getTemplateFile(): FileHandle {
-        return Gdx.files.internal("views/first.lml")
+        return Gdx.files.internal("views/game.lml")
     }
 
     override fun getViewId(): String {

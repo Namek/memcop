@@ -52,12 +52,12 @@
 
     <table onecolumn="true" filly="true" tablealign="top">
         <separator growx="true" padtop="{=3 * $scale}" padbottom="{=2 * $scale}" />
-        <label>from Cartridge #529</label>
+        <label>$inputMemTitle</label>
         <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
         <:actor method="inputMemActor" />
 
         <separator growx="true" padtop="{=3 * $scale}" padbottom="{=2 * $scale}" />
-        <label>to disk</label>
+        <label>$outputMemTitle</label>
         <separator growx="true" padtop="{=3 * $scale}" padbottom="{=6 * $scale}" />
         <:actor method="outputMemActor" />
     </table>
