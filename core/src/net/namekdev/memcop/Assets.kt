@@ -24,6 +24,18 @@ object Assets {
 
     val disposables: MutableList<Disposable> = ArrayList()
 
+    enum class IconFont(val value: Char) {
+        Play('\ue800'),
+        GoToEnd('\ue801'),
+        Stop('\ue802'),
+        Backward('\ue803'),
+        EyeOpen('\ue804'),
+        Pause('\ue805'),
+        Forward('\ue806'),
+        EyeClosed('\ue807'),
+        Bug('\uf188')
+    }
+
     fun load() {
         white = genColorTex(Color.WHITE)
 
@@ -42,7 +54,7 @@ object Assets {
 
         // debug icons as font
         fontParams.size = (20 * Render.scale).roundToInt()
-        fontParams.characters = "\ue800\ue801\ue802\ue803\ue805\ue806\uf188"
+        fontParams.characters = IconFont.values().map { it.value }.joinToString()
         fontParams.color = Color.WHITE
         val fontData = FreeTypeFontGenerator.FreeTypeBitmapFontData()
         fontData.xChars = fontParams.characters.toCharArray()

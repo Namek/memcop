@@ -13,6 +13,8 @@ import com.github.czyzby.lml.annotation.*
 import com.github.czyzby.lml.parser.LmlParser
 import com.github.czyzby.lml.parser.impl.AbstractLmlView
 import com.kotcrab.vis.ui.widget.HighlightTextArea
+import net.namekdev.memcop.Assets
+import net.namekdev.memcop.Assets.IconFont
 import net.namekdev.memcop.domain.Assembly
 import net.namekdev.memcop.domain.Assembly.AssemblyCompilationError
 import net.namekdev.memcop.domain.Level
@@ -40,6 +42,7 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
     internal var level = LevelFactory.create(4)
     internal var transputer: Transputer
     internal var registerValueLabels: MutableMap<String, Label> = TreeMap()
+    var enableGoalPreview = false
 
     val levelName: String
         @LmlAction("levelName")
@@ -88,13 +91,10 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
             }
 
             override fun exit(event: InputEvent?, x: Float, y: Float, pointer: Int, toActor: Actor?) {
-                MemorySourceRenderer.drawGoal = false
-                super.exit(event, x, y, pointer, toActor)
-            }
+                if (!enableGoalPreview)
+                    MemorySourceRenderer.drawGoal = false
 
-            override fun mouseMoved(event: InputEvent?, x: Float, y: Float): Boolean {
-                MemorySourceRenderer.drawGoal = true
-                return super.mouseMoved(event, x, y)
+                super.exit(event, x, y, pointer, toActor)
             }
         })
 
@@ -179,6 +179,16 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
         updateAllUi()
     }
 
+    @LmlAction("showGoal")
+    fun toggleGoal() {
+        enableGoalPreview = !enableGoalPreview
+        updateButtonTexts()
+
+        if (enableGoalPreview) {
+            MemorySourceRenderer.drawGoal = true
+        }
+    }
+
     /**
      * Start debugging by going step by step.
      */
@@ -226,11 +236,12 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
         val isDebuggingActive = transputer.isDebuggingActive
         val noMoreInstructions = isDebuggingActive && transputer.nextInstruction == null
 
-        btnRun.setText(if (isDebuggingActive) "\ue801" else "\ue800")
+        btnShowGoal.setText((if (enableGoalPreview) IconFont.EyeClosed else IconFont.EyeOpen).value.toString())
+        btnRun.setText((if (isDebuggingActive) IconFont.GoToEnd else IconFont.Play).value.toString())
         btnRun.isDisabled = noMoreInstructions
-        btnDebug.setText(if (isDebuggingActive) "\ue806" else "\uf188")
+        btnDebug.setText((if (isDebuggingActive) IconFont.Forward else IconFont.Bug).value.toString())
         btnDebug.isDisabled = noMoreInstructions
-        btnStop.setText("\ue802")
+        btnStop.setText(IconFont.Stop.value.toString())
         btnStop.isDisabled = !isDebuggingActive
     }
 

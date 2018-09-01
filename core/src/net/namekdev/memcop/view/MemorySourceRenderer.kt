@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Batch
 import com.badlogic.gdx.scenes.scene2d.Actor
 import net.namekdev.memcop.Assets
 import net.namekdev.memcop.domain.MemorySource
+import kotlin.math.roundToInt
 
 class MemorySourceRenderer(var memSource: MemorySource) : Actor() {
     init {
@@ -72,8 +73,8 @@ class MemorySourceRenderer(var memSource: MemorySource) : Actor() {
 
 
     companion object {
-        val PADDING = 2 * Render.scale
-        val CELL_SIZE = 22 * Render.scale
+        val PADDING = (2 * Render.scale).roundToInt()
+        val CELL_SIZE = 20 * Render.scale
         internal val COLOR_WRITTEN = Color(0.137f, 0.607f, 0.262f, 1f)
         internal val COLOR_UNTOUCHED = Color.DARK_GRAY
         internal val COLOR_BROKEN = Color.valueOf("9b311d")
