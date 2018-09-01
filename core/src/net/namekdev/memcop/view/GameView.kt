@@ -9,23 +9,21 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
-import com.github.czyzby.lml.annotation.*
+import com.github.czyzby.lml.annotation.LmlAction
+import com.github.czyzby.lml.annotation.LmlActor
+import com.github.czyzby.lml.annotation.LmlAfter
+import com.github.czyzby.lml.annotation.LmlBefore
 import com.github.czyzby.lml.parser.LmlParser
-import com.github.czyzby.lml.parser.impl.AbstractLmlView
 import com.kotcrab.vis.ui.widget.HighlightTextArea
-import net.namekdev.memcop.Assets
 import net.namekdev.memcop.Assets.IconFont
 import net.namekdev.memcop.domain.Assembly
 import net.namekdev.memcop.domain.Assembly.AssemblyCompilationError
-import net.namekdev.memcop.domain.Level
 import net.namekdev.memcop.domain.LevelFactory
 import net.namekdev.memcop.domain.Transputer
 import net.namekdev.memcop.view.widgets.LmlSourceHighlighter
+import java.util.*
 
-import java.util.ArrayList
-import java.util.TreeMap
-
-class GameView(_stage: Stage) : AbstractLmlView(_stage) {
+class GameView(_stage: Stage) : AbstractView("game", "game", _stage) {
     private var parser: LmlParser? = null
 
     @LmlActor("btnRun") lateinit var btnRun: TextButton
@@ -33,7 +31,6 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
     @LmlActor("btnStop") lateinit var btnStop: TextButton
     @LmlActor("btnShowGoal") lateinit var btnShowGoal: TextButton
 
-    @get:LmlAction("scale") val scale = Render.scale
     @get:LmlAction("codeInput") val codeInput = HighlightTextArea("", "codeTextArea")
 
     lateinit var skin: Skin
@@ -136,15 +133,6 @@ class GameView(_stage: Stage) : AbstractLmlView(_stage) {
         compileCode()
         updateAllUi()
     }
-
-    override fun getTemplateFile(): FileHandle {
-        return Gdx.files.internal("views/game.lml")
-    }
-
-    override fun getViewId(): String {
-        return "first"
-    }
-
 
     @LmlAction("codeCursor")
     fun createCodeCursor(): Actor {

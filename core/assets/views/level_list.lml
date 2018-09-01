@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!DOCTYPE window SYSTEM "../../lml.dtd">
+
+<table fillparent="true" defaultpad="{=10 * $scale}" tablepad="{=12 * $scale}">
+    <label style="header" row="true" colspan="3" padbottom="0">asd</label>
+
+    <textbutton>OK</textbutton>
+</table>

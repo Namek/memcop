@@ -21,6 +21,7 @@ class MemorySourceRenderer(var memSource: MemorySource) : Actor() {
         val lastTouchedIndex = memSource.lastPos
         val tix = lastTouchedIndex % iw
         val tiy = lastTouchedIndex / iw
+        val alpha = this.color.a * parentAlpha
 
         var y = y + height - CELL_SIZE
         var iy = 0
@@ -52,11 +53,11 @@ class MemorySourceRenderer(var memSource: MemorySource) : Actor() {
                     }
                 }
 
-                batch.color = cellBg
+                batch.setColor(cellBg.r, cellBg.g, cellBg.b, alpha)
                 batch.draw(Assets.white, x, y, CELL_SIZE, CELL_SIZE)
 
                 if (renderCursor) {
-                    batch.color = cursorColor
+                    batch.setColor(cursorColor.r, cursorColor.g, cursorColor.b, alpha)
                     batch.draw(Assets.white, x, y, CELL_SIZE, (CELL_SIZE / 5))
                 }
 
