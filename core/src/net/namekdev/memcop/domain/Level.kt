@@ -7,6 +7,10 @@ class Level(
     val validators: List<LevelCompletionValidator>,
     val shouldCopyCodeSolutionFromPreviousLevel: Boolean
 ) {
+    init {
+        reset()
+    }
+
     fun reset() {
         for (validator in validators) {
             val info = validator.info

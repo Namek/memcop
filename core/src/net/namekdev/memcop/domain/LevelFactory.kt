@@ -11,30 +11,30 @@ object LevelFactory {
     val adapter = moshi.adapter<List<LevelInfo>>(Types.newParameterizedType(List::class.java, LevelInfo::class.java))
     val jsEngine = ScriptEngineManager().getEngineByName("nashorn")
 
-    var _levelDefinitions: kotlin.Array<() -> Level> = arrayOf()
+    lateinit var levelConstructors: List<() -> Level>
 
     init {
-        initLevels()
+        loadLevels()
+
+        // a runtime check to see if all levels at least construct properly
+        levelConstructors.forEach { it.invoke() }
     }
 
-    fun initLevels() {
-        val levelJsons = jsEngine.eval(Gdx.files.internal("levels.js").readString()).toString()
+    fun loadLevels() {
+        val code = "(function() { " + Gdx.files.internal("levels.js").readString() + " ; })();"
+        val levelJsons = jsEngine.eval(code).toString()
         val levelInfos = adapter.fromJson(levelJsons)!!
 
-        _levelDefinitions = levelInfos
+        levelConstructors = levelInfos
             .map { l ->
-                val memories = l.memories.map { MemorySource.fromPojo(it) }
-                val validators = l.validators.map { LevelCompletionValidator.fromPojo(it) }
+                { ->
+                    val memories = l.memories.map { MemorySource.fromPojo(it) }
+                    val validators = l.validators.map { LevelCompletionValidator.fromPojo(it) }
 
-                Level(l.name, l.goalDescription, memories, validators, l.shouldCopyCodeSolutionFromPreviousLevel)
+                    Level(l.name, l.goalDescription, memories, validators, l.shouldCopyCodeSolutionFromPreviousLevel)
+                }
             }
-            .map { l -> { -> l} }
-            .toTypedArray()
     }
 
-    fun create(index: Int): Level {
-        val l = _levelDefinitions.get(index).invoke()
-        l.reset()
-        return l
-    }
+    fun create(index: Int): Level = levelConstructors.get(index).invoke()
 }
