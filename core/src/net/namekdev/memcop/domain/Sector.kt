@@ -1,5 +1,6 @@
 package net.namekdev.memcop.domain
 
+import net.namekdev.memcop.domain.pojo.SectorInfo
 import java.util.Random
 
 /**
@@ -23,11 +24,6 @@ class Sector(val originallyBroken: Boolean) {
 
     val isWritable: Boolean
         get() = !broken
-
-
-    constructor() : this(false) {
-        reset()
-    }
 
     init {
         reset()
@@ -58,15 +54,15 @@ class Sector(val originallyBroken: Boolean) {
     override fun toString(): String {
         if (written)
             return "_"
-        return if (broken) "x" else " "
 
+        return if (broken) "x" else " "
     }
 
     companion object {
-        var random = Random()
+        val random = Random()
 
-        fun newBroken(): Sector {
-            return Sector(true)
+        fun fromPojo(info: SectorInfo): Sector {
+            return Sector(info.isBroken)
         }
     }
 }

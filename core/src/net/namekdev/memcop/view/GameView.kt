@@ -51,11 +51,11 @@ class GameView(_stage: Stage) : AbstractView("game", "game", _stage) {
 
     val inputMemTitle: String
         @LmlAction("inputMemTitle")
-        get() = level.inputMemTitle
+        get() = level.memories[0].title
 
     val outputMemTitle: String
         @LmlAction("outputMemTitle")
-        get() = level.outputMemTitle
+        get() = level.memories[1].title
 
     val registerList: List<String>
         @LmlAction("registers")
@@ -71,8 +71,8 @@ class GameView(_stage: Stage) : AbstractView("game", "game", _stage) {
 
     init {
         transputer = Transputer()
-        transputer.sourceMemory = level.inputMem
-        transputer.destMemory = level.outputMem
+        transputer.sourceMemory = level.memories[0]
+        transputer.destMemory = level.memories[1]
         transputer.reset()
 
         codeInput.highlighter = LmlSourceHighlighter()
@@ -141,12 +141,12 @@ class GameView(_stage: Stage) : AbstractView("game", "game", _stage) {
 
     @LmlAction("inputMemActor")
     fun createInputMemActor(): Actor {
-        return MemorySourceRenderer(level.inputMem)
+        return MemorySourceRenderer(level.memories[0])
     }
 
     @LmlAction("outputMemActor")
     fun createOutputMemActor(): Actor {
-        return MemorySourceRenderer(level.outputMem)
+        return MemorySourceRenderer(level.memories[1])
     }
 
     @LmlAction("createRegisterValueLabel")

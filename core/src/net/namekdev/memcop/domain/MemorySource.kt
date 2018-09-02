@@ -1,11 +1,13 @@
 package net.namekdev.memcop.domain
 
-import com.badlogic.gdx.utils.Array
+import net.namekdev.memcop.domain.pojo.MemorySourceInfo
 
-class MemorySource {
-    val validSectorsCount: Int
-    val sectorsPerRow: Int
+class MemorySource(
+    val title: String,
+    val sectorsPerRow: Int,
     val sectors: Array<Sector>
+) {
+    val validSectorsCount: Int
 
     var canReadFrom: Boolean = false
     var canWriteTo: Boolean = false
@@ -21,26 +23,13 @@ class MemorySource {
             return sectors.size / sectorsPerRow + t
         }
 
-    constructor(sectorsPerRow: Int, sectors: Array<Sector>) {
-        this.sectorsPerRow = sectorsPerRow
-        this.sectors = sectors
-
+    init {
         var i = 0
         for (sector in sectors) {
             if (sector.isWritable)
                 i++
         }
         this.validSectorsCount = i
-    }
-
-    constructor(sectorsPerRow: Int, totalSize: Int) {
-        val sectors = Array<Sector>(totalSize)
-        for (i in 0 until totalSize)
-            sectors.add(Sector())
-
-        this.sectorsPerRow = sectorsPerRow
-        this.sectors = sectors
-        this.validSectorsCount = totalSize
     }
 
     fun readValue(requestedIndex: Int): Int {
@@ -70,5 +59,31 @@ class MemorySource {
         lastPos = -1
         for (sector in sectors)
             sector.reset()
+    }
+
+    companion object {
+        fun fromPojo(info: MemorySourceInfo): MemorySource {
+            val sectors: Array<Sector> = (
+                if (info.sectors != null)
+                    info.sectors.map { it -> Sector.fromPojo(it) }.toTypedArray()
+                else {
+                    if (info.brokenSectorIndices == null) {
+                        Array(info.size) { Sector(false) }
+                    }
+                    else Array(info.size) { i ->
+                        val isBroken = info.brokenSectorIndices.contains(i)
+                        Sector(isBroken)
+                    }
+                }
+            )
+
+            val mem = MemorySource(info.title, info.sectorsPerRow, sectors)
+            mem.canReadFrom = info.canReadFrom
+            mem.canReadFromSpecificIndex = info.canReadFromSpecificIndex
+            mem.canWriteTo = info.canWriteTo
+            mem.canWriteToSpecificIndex = info.canWriteToSpecificIndex
+
+            return mem
+        }
     }
 }
